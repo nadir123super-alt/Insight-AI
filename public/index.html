@@ -9,16 +9,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #F0F2F5; /* 全局背景: 极淡的灰蓝色 */
-            --card-bg: #FFFFFF; /* 卡片背景: 纯白 */
-            --primary-color: #007BFF; /* 主色调 */
-            --primary-light-color: #4da0ff; /* 渐变浅蓝色 */
-            --primary-hover-color: #0056b3; /* 按钮悬停色 */
+            --bg-color: #EAEFF2; /* 全局背景: 高档冷灰色纸张，透着一点点蓝 */
+            --card-bg: #FFFFFF; /* 卡片背景: 纯白，如悬浮的白巧克力 */
+            --primary-color: #007acc; /* 主色调: 更内敛的蓝色 */
+            --primary-light-color: #3399cc; /* 渐变浅蓝色 */
+            --primary-hover-color: #005f99; /* 按钮悬停色 */
             --text-main-color: #333333; /* 主要文字 */
             --text-secondary-color: #666666; /* 次要说明 */
             --border-color: #e0e0e0; /* 边框色 */
             --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.08); /* 轻盈阴影 */
-            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.05); /* 卡片阴影 */
+            --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.08); /* 卡片阴影，更柔和有层次感 */
+            --focus-glow-color: rgba(0, 122, 204, 0.3); /* 聚焦蓝光 */
+            --result-bg-light-blue: #F7F9FC; /* 结果区背景：极淡的蓝色 */
         }
 
         body {
@@ -87,7 +89,7 @@
         }
         textarea:focus {
             background-color: var(--card-bg); /* 聚焦时背景变为白色 */
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3), var(--shadow-subtle); /* 蓝色柔光和轻微阴影 */
+            box-shadow: 0 0 0 3px var(--focus-glow-color), var(--shadow-subtle); /* 蓝色柔光和轻微阴影 */
             outline: none;
         }
 
@@ -112,6 +114,10 @@
             transform: translateY(-2px); /* 轻轻上浮 */
             box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3); /* 增强阴影 */
             background-image: linear-gradient(to right, var(--primary-light-color), var(--primary-color)); /* 渐变反转 */
+        }
+        button:active {
+            transform: translateY(1px); /* 轻微下沉 */
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2); /* 减弱阴影 */
         }
         button:disabled {
             background-image: none; /* 禁用时去除渐变 */
@@ -154,7 +160,7 @@
             border-radius: 50%;
             width: 40px;
             height: 40px;
-            animation: spin 1s linear infinite;
+            animation: spin 1s linear infinite, pulse 1.5s infinite alternate; /* Add pulse animation */
         }
 
         @keyframes spin {
@@ -162,9 +168,21 @@
             100% { transform: rotate(360deg); }
         }
 
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 var(--focus-glow-color);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 122, 204, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 122, 204, 0);
+            }
+        }
+
         .result-area {
             flex-grow: 1;
-            background-color: #F8F9FA; /* 与 textarea 类似的淡灰色背景 */
+            background-color: var(--result-bg-light-blue); /* 极淡的蓝色背景 */
             padding: 25px; /* 调整内边距 */
             border-radius: 12px;
             min-height: 200px; /* 调整最小高度 */
@@ -174,7 +192,15 @@
             font-size: 15px;
             color: var(--text-main-color);
         }
-        .result-area h1, .result-area h2, .result-area h3, .result-area h4, .result-area h5, .result-area h6 {
+        .result-area h1 {
+            font-size: 2em; /* Make H1 larger */
+            border-bottom: 2px solid var(--border-color); /* Add a subtle separator */
+            padding-bottom: 0.5em;
+            margin-bottom: 1em;
+            color: var(--text-main-color);
+            font-weight: 600;
+        }
+        .result-area h2, .result-area h3, .result-area h4, .result-area h5, .result-area h6 {
             color: var(--text-main-color);
             margin-top: 1.8em; /* 调整 Markdown 标题间距 */
             margin-bottom: 0.8em;
