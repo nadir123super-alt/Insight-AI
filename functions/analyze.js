@@ -1,4 +1,5 @@
 export async function onRequestPost(context) {
+    console.log('API Triggered');
     const { request, env } = context;
 
     if (request.method !== 'POST') {
