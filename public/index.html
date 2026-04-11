@@ -30,7 +30,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 40px; /* Outer container padding */
             box-sizing: border-box;
             line-height: 1.6; /* 整体行高 */
         }
@@ -45,6 +45,7 @@
 
         .panel {
             flex: 1;
+            min-width: 0; /* Ensures panels shrink properly */
             background: var(--card-bg);
             padding: 40px; /* 增加卡片内边距 */
             border-radius: 16px; /* 增加圆角 */
@@ -179,7 +180,8 @@
             margin-bottom: 0.8em;
             font-weight: 600;
         }
-        .result-area p {\n            margin-bottom: 1.2em;
+        .result-area p {
+            margin-bottom: 1.2em;
         }
         .result-area ul, .result-area ol {
             margin-bottom: 1.2em;
@@ -216,138 +218,145 @@
             body {
                 padding: 15px;
             }
-            .main-wrapper {\n                flex-direction: column;
+            .main-wrapper {
+                flex-direction: column;
                 min-height: unset;
                 gap: 20px;
             }
-            .panel {\n                padding: 25px;
+            .panel {
+                padding: 25px;
                 margin-bottom: 0; /* Remove bottom margin as gap handles it */
             }
-            h1 {\n                font-size: 26px;
+            h1 {
+                font-size: 26px;
             }
-            textarea {\n                min-height: 250px;
+            textarea {
+                min-height: 250px;
             }
-            button {\n                width: 100%;
+            button {
+                width: 100%;
                 max-width: 280px; /* Slightly larger buttons */
                 font-size: 17px;
                 padding: 12px 25px;
             }
-            .button-group {\n                flex-direction: column;
+            .button-group {
+                flex-direction: column;
                 align-items: center;
                 gap: 10px;
             }
-            .result-area {\n                padding: 20px;
+            .result-area {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class=\"main-wrapper\">\
-        <div class=\"panel input-panel\">\
-            <h1>访谈语料输入区</h1>\
-            <textarea id=\"interviewText\" placeholder=\"请输入访谈文本...\" rows=\"10\"></textarea>\
-            <div class=\"button-group\">\
-                <button id=\"analyzeButton\">开始 AI 分析</button>\
-            </div>\
-            <div id=\"loadingIndicator\" class=\"loading\" style=\"display: none;\">\
-                正在分析中，请稍候...\
-            </div>\
-        </div>\
-\
-        <div class=\"panel result-panel\">\
-            <h1>三级编码结果区</h1>\
-            <div class=\"button-group\">\
-                <button id=\"copyResultButton\" style=\"display: none;\">复制结果</button>\
-            </div>\
-            <div id=\"resultArea\" class=\"result-area\">\
-                <!-- 分析结果将显示在这里 -->\
-            </div>\
-            <div id=\"errorMessage\" class=\"error\"></div>\
-            <div id=\"resultLoadingOverlay\" class=\"loading-overlay\">\
-                <div class=\"loader\"></div>\
-            </div>\
-        </div>\
-    </div>\
-\
-    <script src=\"https://cdn.jsdelivr.net/npm/marked/marked.min.js\"></script>\
-    <script>\
-        const analyzeButton = document.getElementById('analyzeButton');\
-        const interviewText = document.getElementById('interviewText');\
-        const loadingIndicator = document.getElementById('loadingIndicator');\
-        const resultArea = document.getElementById('resultArea');\
-        const errorMessage = document.getElementById('errorMessage');\
-        const copyResultButton = document.getElementById('copyResultButton');\
-        const resultLoadingOverlay = document.getElementById('resultLoadingOverlay');\
-\
-        // Initial hide copy button and overlay\
-        copyResultButton.style.display = 'none';\
-        resultLoadingOverlay.classList.remove('active');\
-\
-        analyzeButton.addEventListener('click', async () => {\
-            const text = interviewText.value.trim();\
-            if (!text) {\
-                alert('请输入访谈文本再进行分析。');\
-                return;\
-            }\
-\
-            // Show loading states\
-            loadingIndicator.classList.add('active');\
-            resultLoadingOverlay.classList.add('active');\
-            analyzeButton.disabled = true;\
-            copyResultButton.style.display = 'none'; // Hide copy button during analysis\
-            resultArea.innerHTML = ''; // Clear previous results\
-            errorMessage.textContent = ''; // Clear previous errors\
-\
-            console.log('开始 AI 分析请求...');\
-\
-            try {\
-                const response = await fetch('/api/analyze', {\
-                    method: 'POST',\
-                    headers: {\
-                        'Content-Type': 'application/json',\
-                    },\
-                    body: JSON.stringify({ text }),\
-                });\
-\
-                console.log('请求状态：', response.status, response.statusText);\
-\
-                if (!response.ok) {\
-                    const errorData = await response.json();\
-                    throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);\
-                }\
-\
-                const data = await response.json();\
-                console.log('接收到分析结果：', data);\
-                \
-                const aiResponseContent = data.choices[0].message.content;\
-                // Render Markdown content\
-                resultArea.innerHTML = marked.parse(aiResponseContent);\
-                copyResultButton.style.display = 'inline-flex'; // Show copy button after successful analysis\
-\
-\
-            } catch (error) {\
-                console.error('AI 分析请求失败：', error);\
-                errorMessage.textContent = `分析失败: ${error.message}`;\
-                resultArea.innerHTML = `<p style=\"color: red;\">分析过程中发生错误：${error.message}</p>`;\
-            } finally {\
-                // Hide loading states\
-                loadingIndicator.classList.remove('active');\
-                resultLoadingOverlay.classList.remove('active');\
-                analyzeButton.disabled = false;\
-                console.log('AI 分析请求完成。');\
-            }\
-        });\
-\
-        copyResultButton.addEventListener('click', async () => {\
-            const textToCopy = resultArea.innerText; // Get the rendered text\
-            try {\
-                await navigator.clipboard.writeText(textToCopy);\
-                alert('结果已复制到剪贴板！');\
-            } catch (err) {\
-                console.error('复制失败:', err);\
-                alert('复制失败，请手动复制。');\
-            }\
-        });\
-    </script>\
-</body>\
+    <div class="main-wrapper">
+        <div class="panel input-panel">
+            <h1>访谈语料输入区</h1>
+            <textarea id="interviewText" placeholder="请输入访谈文本..." rows="10"></textarea>
+            <div class="button-group">
+                <button id="analyzeButton">开始 AI 分析</button>
+            </div>
+            <div id="loadingIndicator" class="loading" style="display: none;">
+                正在分析中，请稍候...
+            </div>
+        </div>
+
+        <div class="panel result-panel">
+            <h1>三级编码结果区</h1>
+            <div class="button-group">
+                <button id="copyResultButton" style="display: none;">复制结果</button>
+            </div>
+            <div id="resultArea" class="result-area">
+                <!-- 分析结果将显示在这里 -->
+            </div>
+            <div id="errorMessage" class="error"></div>
+            <div id="resultLoadingOverlay" class="loading-overlay">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const analyzeButton = document.getElementById('analyzeButton');
+        const interviewText = document.getElementById('interviewText');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const resultArea = document.getElementById('resultArea');
+        const errorMessage = document.getElementById('errorMessage');
+        const copyResultButton = document.getElementById('copyResultButton');
+        const resultLoadingOverlay = document.getElementById('resultLoadingOverlay');
+
+        // Initial hide copy button and overlay
+        copyResultButton.style.display = 'none';
+        resultLoadingOverlay.classList.remove('active');
+
+        analyzeButton.addEventListener('click', async () => {
+            const text = interviewText.value.trim();
+            if (!text) {
+                alert('请输入访谈文本再进行分析。');
+                return;
+            }
+
+            // Show loading states
+            loadingIndicator.classList.add('active');
+            resultLoadingOverlay.classList.add('active');
+            analyzeButton.disabled = true;
+            copyResultButton.style.display = 'none'; // Hide copy button during analysis
+            resultArea.innerHTML = ''; // Clear previous results
+            errorMessage.textContent = ''; // Clear previous errors
+
+            console.log('开始 AI 分析请求...');
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text }),
+                });
+
+                console.log('请求状态：', response.status, response.statusText);
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('接收到分析结果：', data);
+                
+                const aiResponseContent = data.choices[0].message.content;
+                // Render Markdown content
+                resultArea.innerHTML = marked.parse(aiResponseContent);
+                copyResultButton.style.display = 'inline-flex'; // Show copy button after successful analysis
+
+
+            } catch (error) {
+                console.error('AI 分析请求失败：', error);
+                errorMessage.textContent = `分析失败: ${error.message}`;
+                resultArea.innerHTML = `<p style="color: red;">分析过程中发生错误：${error.message}</p>`;
+            } finally {
+                // Hide loading states
+                loadingIndicator.classList.remove('active');
+                resultLoadingOverlay.classList.remove('active');
+                analyzeButton.disabled = false;
+                console.log('AI 分析请求完成。');
+            }
+        });
+
+        copyResultButton.addEventListener('click', async () => {
+            const textToCopy = resultArea.innerText; // Get the rendered text
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                alert('结果已复制到剪贴板！');
+            } catch (err) {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制。');
+            }
+        });
+    </script>
+</body>
 </html>
