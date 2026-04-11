@@ -54,7 +54,7 @@ export async function onRequest(context) {
 请确保所有标签、范畴和核心主题都清晰、准确，并与访谈文本内容紧密相关。`;
 
         const body = JSON.stringify({
-            model: "glm-4-air", // Using glm-4-air as glm-4.5-air might be a future model or a typo, glm-4-air is currently available.
+            model: "glm-4.5-air", // Using glm-4-air as glm-4.5-air might be a future model or a typo, glm-4-air is currently available.
             messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: text }
