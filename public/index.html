@@ -9,22 +9,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #EAEFF2; /* 全局背景: 高档冷灰色纸张，透着一点点蓝 */
-            --card-bg: #FFFFFF; /* 卡片背景: 纯白，如悬浮的白巧克力 */
-            --primary-color: #007acc; /* 主色调: 更内敛的蓝色 */
-            --primary-light-color: #3399cc; /* 渐变浅蓝色 */
-            --primary-hover-color: #005f99; /* 按钮悬停色 */
-            --text-main-color: #333333; /* 主要文字 */
-            --text-secondary-color: #666666; /* 次要说明 */
-            --border-color: #e0e0e0; /* 边框色 */
-            --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.08); /* 轻盈阴影 */
-            --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.08); /* 卡片阴影，更柔和有层次感 */
-            --focus-glow-color: rgba(0, 122, 204, 0.3); /* 聚焦蓝光 */
-            --result-bg-light-blue: #F7F9FC; /* 结果区背景：极淡的蓝色 */
+            --bg-color: #F9FAFB; /* 纯净背景: 极淡灰白 */
+            --card-bg: #FFFFFF; /* 卡片背景: 纯白 */
+            --primary-color: #007AFF; /* 主色调: 专业蓝 (Apple Blue) */
+            --primary-light-color: #66B2FF; /* 用于渐变或更浅的蓝色，但主要按钮不再使用渐变 */
+            --primary-hover-color: #005fcc; /* 按钮悬停色 */
+            --text-main-color: #212121; /* 主要文字: 优雅深灰 */
+            --text-secondary-color: #666666; /* 次要说明: 中灰色 */
+            --border-color: #E0E0E0; /* 边框色: 极细浅灰 */
+            --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.04); /* 轻盈阴影 */
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.04); /* 卡片阴影，更柔和更克制 */
+            --focus-glow-color: rgba(0, 122, 255, 0.2); /* 聚焦蓝光 (更浅) */
+            --result-bg-light-blue: var(--card-bg); /* 结果区背景：纯白，与卡片一致 */
+
+            /* Morandi Colors for Coding (for future use, not directly applied yet) */
+            --morandi-blue-gray: #CCD6DD;
+            --morandi-pink-green: #D4DED7;
+            --morandi-light-gold: #F0E8D7;
+            --morandi-warm-gray: #D6D6D6;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             margin: 0;
             background-color: var(--bg-color);
             color: var(--text-main-color);
@@ -32,26 +38,28 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 40px; /* Outer container padding */
+            padding: 60px; /* 大幅增加留白 */
             box-sizing: border-box;
-            line-height: 1.6; /* 整体行高 */
+            line-height: 1.8; /* 整体行高，增加呼吸感 */
         }
 
         .main-wrapper {
             display: flex;
             width: 100%;
-            max-width: 1400px;
-            gap: 30px; /* 增加卡片间距 */
-            min-height: 85vh; /* 调整最小高度 */
+            max-width: 1200px; /* 中心化聚焦 */
+            margin: 0 auto; /* 水平居中 */
+            gap: 40px; /* 增加卡片间距 */
+            min-height: calc(100vh - 120px); /* 调整最小高度以适应padding */
         }
 
         .panel {
             flex: 1;
             min-width: 0; /* Ensures panels shrink properly */
             background: var(--card-bg);
-            padding: 40px; /* 增加卡片内边距 */
-            border-radius: 16px; /* 增加圆角 */
-            box-shadow: var(--shadow-card); /* 增加卡片阴影 */
+            padding: 50px; /* 增加卡片内边距 */
+            border-radius: 12px; /* 统一圆角 */
+            box-shadow: var(--shadow-card); /* 调整卡片阴影，更柔和 */
+            border: 1px solid var(--border-color); /* 极细浅灰边框 */
             display: flex;
             flex-direction: column;
             position: relative; /* For loading overlay positioning */
@@ -59,31 +67,31 @@
 
         h1 {
             text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 30px;
-            font-size: 32px; /* 调整标题字号 */
-            font-weight: 600;
+            color: var(--text-main-color); /* H1颜色使用主文本色 */
+            margin-bottom: 40px; /* 增加间距 */
+            font-size: 38px; /* 巨大、清晰、有分量 */
+            font-weight: 700; /* 半粗体 */
         }
 
         h2 {
-            font-size: 20px;
-            margin-bottom: 15px;
+            font-size: 22px;
+            margin-bottom: 18px;
             color: var(--text-main-color);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         textarea {
             width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
+            padding: 20px; /* 增加内边距 */
+            margin-bottom: 25px; /* 增加间距 */
             border: none; /* 去除边框 */
-            background-color: #F8F9FA; /* 淡灰色背景 */
-            border-radius: 12px; /* 调整圆角 */
+            background-color: #F5F7F9; /* 纯净的淡灰色背景 */
+            border-radius: 10px; /* 统一圆角 */
             font-size: 16px;
             box-sizing: border-box;
-            min-height: 350px; /* 调整最小高度 */
+            min-height: 380px; /* 调整最小高度 */
             resize: vertical;
-            font-family: inherit;
+            font-family: inherit; /* 继承body的字体 */
             color: var(--text-main-color);
             transition: background-color 0.2s ease, box-shadow 0.2s ease;
         }
@@ -97,30 +105,29 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 14px 30px; /* 调整按钮大小 */
-            background-image: linear-gradient(to right, var(--primary-color), var(--primary-light-color)); /* 渐变背景 */
+            padding: 16px 32px; /* 调整按钮大小 */
+            background-color: var(--primary-color); /* 纯色背景，去除渐变 */
             color: white;
             border: none;
-            border-radius: 10px; /* 调整按钮圆角 */
-            font-size: 18px;
+            border-radius: 10px; /* 统一按钮圆角 */
+            font-size: 17px;
             cursor: pointer;
             font-weight: 500;
-            transition: all 0.3s ease; /* 增加过渡效果 */
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2); /* 按钮阴影 */
-            text-transform: uppercase; /* 文本大写 */
-            letter-spacing: 0.5px;
+            transition: all 0.2s ease; /* 优化过渡效果 */
+            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.15); /* 按钮阴影更柔和 */
+            text-transform: none; /* 文本不高亮 */
+            letter-spacing: normal; /* 字符间距正常 */
         }
         button:hover {
-            transform: translateY(-2px); /* 轻轻上浮 */
-            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3); /* 增强阴影 */
-            background-image: linear-gradient(to right, var(--primary-light-color), var(--primary-color)); /* 渐变反转 */
+            transform: translateY(-3px); /* 轻轻上浮效果 */
+            box-shadow: 0 8px 25px rgba(0, 122, 255, 0.25); /* 增强阴影 */
+            background-color: var(--primary-hover-color); /* 悬停颜色变深 */
         }
         button:active {
-            transform: translateY(1px); /* 轻微下沉 */
-            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2); /* 减弱阴影 */
+            transform: translateY(0); /* 轻微下沉 */
+            box-shadow: 0 3px 10px rgba(0, 122, 255, 0.1); /* 减弱阴影 */
         }
         button:disabled {
-            background-image: none; /* 禁用时去除渐变 */
             background-color: #cccccc;
             cursor: not-allowed;
             box-shadow: none;
@@ -129,8 +136,8 @@
         .button-group {
             display: flex;
             justify-content: center;
-            gap: 15px; /* 按钮间距 */
-            margin-top: 25px;
+            gap: 20px; /* 按钮间距 */
+            margin-top: 30px;
         }
 
         .loading-overlay {
@@ -139,11 +146,11 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.8); /* 半透明白色覆盖层 */
+            background: rgba(255, 255, 255, 0.7); /* 半透明白色覆盖层，更轻盈 */
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 16px;
+            border-radius: 12px; /* 统一圆角 */
             z-index: 10;
             opacity: 0;
             visibility: hidden;
@@ -155,12 +162,12 @@
         }
 
         .loader {
-            border: 5px solid #f3f3f3; /* Light grey */
-            border-top: 5px solid var(--primary-color); /* Blue */
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid var(--primary-color); /* Blue */
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite, pulse 1.5s infinite alternate; /* Add pulse animation */
+            width: 36px; /* 略微缩小 */
+            height: 36px; /* 略微缩小 */
+            animation: spin 1s linear infinite, pulse 1.5s infinite alternate;
         }
 
         @keyframes spin {
@@ -170,71 +177,71 @@
 
         @keyframes pulse {
             0% {
-                box-shadow: 0 0 0 0 var(--focus-glow-color);
+                box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.2); /* 调整脉冲颜色和强度 */
             }
             70% {
-                box-shadow: 0 0 0 10px rgba(0, 122, 204, 0);
+                box-shadow: 0 0 0 15px rgba(0, 122, 255, 0);
             }
             100% {
-                box-shadow: 0 0 0 0 rgba(0, 122, 204, 0);
+                box-shadow: 0 0 0 0 rgba(0, 122, 255, 0);
             }
         }
 
         .result-area {
             flex-grow: 1;
-            background-color: var(--result-bg-light-blue); /* 极淡的蓝色背景 */
-            padding: 25px; /* 调整内边距 */
-            border-radius: 12px;
-            min-height: 200px; /* 调整最小高度 */
-            border: none; /* 去除边框 */
+            background-color: var(--card-bg); /* 结果区背景改为纯白 */
+            border: 1px solid var(--border-color); /* 极细浅灰边框 */
+            padding: 30px; /* 调整内边距 */
+            border-radius: 12px; /* 统一圆角 */
+            min-height: 250px; /* 调整最小高度 */
             overflow-y: auto;
             line-height: 1.8; /* 优化行高 */
-            font-size: 15px;
+            font-size: 16px; /* 调整字体大小 */
             color: var(--text-main-color);
         }
         .result-area h1 {
-            font-size: 2em; /* Make H1 larger */
-            border-bottom: 2px solid var(--border-color); /* Add a subtle separator */
-            padding-bottom: 0.5em;
-            margin-bottom: 1em;
+            font-size: 2.2em; /* Make H1 larger */
+            border-bottom: 1px solid var(--border-color); /* 更细的分割线 */
+            padding-bottom: 0.8em;
+            margin-bottom: 1.2em;
             color: var(--text-main-color);
-            font-weight: 600;
+            font-weight: 700; /* 更粗的H1 */
         }
         .result-area h2, .result-area h3, .result-area h4, .result-area h5, .result-area h6 {
             color: var(--text-main-color);
-            margin-top: 1.8em; /* 调整 Markdown 标题间距 */
-            margin-bottom: 0.8em;
+            margin-top: 2em; /* 调整 Markdown 标题间距 */
+            margin-bottom: 1em;
             font-weight: 600;
         }
         .result-area p {
-            margin-bottom: 1.2em;
+            margin-bottom: 1.5em; /* 增加段落间距 */
         }
         .result-area ul, .result-area ol {
-            margin-bottom: 1.2em;
-            padding-left: 25px; /* 调整列表内边距 */
+            margin-bottom: 1.5em;
+            padding-left: 30px; /* 调整列表内边距 */
         }
         .result-area code {
-            background-color: #e9e9e9; /* 调整代码背景色 */
-            padding: 3px 6px;
-            border-radius: 6px;
+            background-color: #F0F2F5; /* 调整代码背景色 */
+            padding: 4px 8px;
+            border-radius: 5px;
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-            font-size: 0.88em;
+            font-size: 0.9em;
         }
         .result-area pre {
-            background-color: #e9e9e9;
+            background-color: #F0F2F5;
             padding: 20px;
             border-radius: 10px;
             overflow-x: auto;
-            margin-bottom: 1.5em;
+            margin-bottom: 2em;
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-            font-size: 0.9em;
-            line-height: 1.5;
+            font-size: 0.95em;
+            line-height: 1.6;
         }
 
         .error {
             color: #dc3545;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 25px;
             font-size: 16px;
             font-weight: 500;
         }
@@ -242,36 +249,45 @@
         /* Responsive design for mobile */
         @media (max-width: 768px) {
             body {
-                padding: 15px;
+                padding: 25px;
+                line-height: 1.7;
             }
             .main-wrapper {
                 flex-direction: column;
                 min-height: unset;
-                gap: 20px;
+                gap: 30px;
             }
             .panel {
-                padding: 25px;
-                margin-bottom: 0; /* Remove bottom margin as gap handles it */
+                padding: 30px;
+                margin-bottom: 0;
             }
             h1 {
-                font-size: 26px;
+                font-size: 30px;
+                margin-bottom: 30px;
             }
             textarea {
-                min-height: 250px;
+                min-height: 300px;
+                padding: 18px;
             }
             button {
                 width: 100%;
-                max-width: 280px; /* Slightly larger buttons */
-                font-size: 17px;
-                padding: 12px 25px;
+                max-width: 300px;
+                font-size: 16px;
+                padding: 14px 28px;
             }
             .button-group {
                 flex-direction: column;
                 align-items: center;
-                gap: 10px;
+                gap: 15px;
             }
             .result-area {
-                padding: 20px;
+                padding: 25px;
+                font-size: 15px;
+            }
+            .result-area h1 {
+                font-size: 2em;
+                padding-bottom: 0.6em;
+                margin-bottom: 1em;
             }
         }
     </style>
