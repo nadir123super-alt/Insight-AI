@@ -3,400 +3,811 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InsightAI 社会学访谈编码工具</title>
+    <title>InsightAI · 学术溯源编码</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #F9FAFB; /* 纯净背景: 极淡灰白 */
-            --card-bg: #FFFFFF; /* 卡片背景: 纯白 */
-            --primary-color: #007AFF; /* 主色调: 专业蓝 (Apple Blue) */
-            --primary-light-color: #66B2FF; /* 用于渐变或更浅的蓝色，但主要按钮不再使用渐变 */
-            --primary-hover-color: #005fcc; /* 按钮悬停色 */
-            --text-main-color: #212121; /* 主要文字: 优雅深灰 */
-            --text-secondary-color: #666666; /* 次要说明: 中灰色 */
-            --border-color: #E0E0E0; /* 边框色: 极细浅灰 */
-            --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.04); /* 轻盈阴影 */
-            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.04); /* 卡片阴影，更柔和更克制 */
-            --focus-glow-color: rgba(0, 122, 255, 0.2); /* 聚焦蓝光 (更浅) */
-            --result-bg-light-blue: var(--card-bg); /* 结果区背景：纯白，与卡片一致 */
-
-            /* Morandi Colors for Coding (for future use, not directly applied yet) */
-            --morandi-blue-gray: #CCD6DD;
-            --morandi-pink-green: #D4DED7;
-            --morandi-light-gold: #F0E8D7;
-            --morandi-warm-gray: #D6D6D6;
+            --bg: #f4f6f9;
+            --surface: #ffffff;
+            --border: #e8eaef;
+            --text: #1a1a1a;
+            --muted: #5c6370;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --shadow-soft: 0 4px 24px rgba(15, 23, 42, 0.06);
+            --radius: 12px;
+            /* Morandi tints — 低饱和溯源高亮 */
+            --lit-indigo: rgba(224, 231, 255, 0.62);
+            --lit-indigo-ring: rgba(129, 140, 248, 0.35);
+            --lit-mint: rgba(220, 252, 231, 0.55);
+            --lit-mint-ring: rgba(74, 222, 128, 0.28);
+            --mark-bg: rgba(224, 231, 255, 0.72);
+            --transition-smooth: all 0.3s ease-in-out;
         }
+
+        * { box-sizing: border-box; }
 
         body {
-            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main-color);
+            min-height: 100vh;
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+        }
+
+        .app {
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 60px; /* 大幅增加留白 */
-            box-sizing: border-box;
-            line-height: 1.8; /* 整体行高，增加呼吸感 */
-        }
-
-        .main-wrapper {
-            display: flex;
-            width: 100%;
-            max-width: 1200px; /* 中心化聚焦 */
-            margin: 0 auto; /* 水平居中 */
-            gap: 40px; /* 增加卡片间距 */
-            min-height: calc(100vh - 120px); /* 调整最小高度以适应padding */
-        }
-
-        .panel {
-            flex: 1;
-            min-width: 0; /* Ensures panels shrink properly */
-            background: var(--card-bg);
-            padding: 50px; /* 增加卡片内边距 */
-            border-radius: 12px; /* 统一圆角 */
-            box-shadow: var(--shadow-card); /* 调整卡片阴影，更柔和 */
-            border: 1px solid var(--border-color); /* 极细浅灰边框 */
-            display: flex;
             flex-direction: column;
-            position: relative; /* For loading overlay positioning */
         }
 
-        h1 {
-            text-align: center;
-            color: var(--text-main-color); /* H1颜色使用主文本色 */
-            margin-bottom: 40px; /* 增加间距 */
-            font-size: 38px; /* 巨大、清晰、有分量 */
-            font-weight: 700; /* 半粗体 */
-        }
-
-        h2 {
-            font-size: 22px;
-            margin-bottom: 18px;
-            color: var(--text-main-color);
-            font-weight: 600;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 20px; /* 增加内边距 */
-            margin-bottom: 25px; /* 增加间距 */
-            border: none; /* 去除边框 */
-            background-color: #F5F7F9; /* 纯净的淡灰色背景 */
-            border-radius: 10px; /* 统一圆角 */
-            font-size: 16px;
-            box-sizing: border-box;
-            min-height: 380px; /* 调整最小高度 */
-            resize: vertical;
-            font-family: inherit; /* 继承body的字体 */
-            color: var(--text-main-color);
-            transition: background-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        textarea:focus {
-            background-color: var(--card-bg); /* 聚焦时背景变为白色 */
-            box-shadow: 0 0 0 3px var(--focus-glow-color), var(--shadow-subtle); /* 蓝色柔光和轻微阴影 */
-            outline: none;
-        }
-
-        button {
-            display: inline-flex;
+        .topbar {
+            flex-shrink: 0;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 16px 32px; /* 调整按钮大小 */
-            background-color: var(--primary-color); /* 纯色背景，去除渐变 */
-            color: white;
-            border: none;
-            border-radius: 10px; /* 统一按钮圆角 */
-            font-size: 17px;
-            cursor: pointer;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 22px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+        }
+
+        .brand {
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+
+        .topbar-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button.btn {
+            font-family: inherit;
+            font-size: 0.875rem;
             font-weight: 500;
-            transition: all 0.2s ease; /* 优化过渡效果 */
-            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.15); /* 按钮阴影更柔和 */
-            text-transform: none; /* 文本不高亮 */
-            letter-spacing: normal; /* 字符间距正常 */
+            padding: 9px 16px;
+            border-radius: 9px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition-smooth);
         }
-        button:hover {
-            transform: translateY(-3px); /* 轻轻上浮效果 */
-            box-shadow: 0 8px 25px rgba(0, 122, 255, 0.25); /* 增强阴影 */
-            background-color: var(--primary-hover-color); /* 悬停颜色变深 */
+
+        button.btn:hover:not(:disabled) {
+            border-color: #c8ceda;
+            background: #fafbfc;
         }
-        button:active {
-            transform: translateY(0); /* 轻微下沉 */
-            box-shadow: 0 3px 10px rgba(0, 122, 255, 0.1); /* 减弱阴影 */
+
+        button.btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.22);
         }
-        button:disabled {
-            background-color: #cccccc;
+
+        button.btn-primary:hover:not(:disabled) {
+            background: var(--primary-hover);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.28);
+        }
+
+        button.btn:disabled {
+            opacity: 0.55;
             cursor: not-allowed;
             box-shadow: none;
-            transform: translateY(0);
         }
-        .button-group {
+
+        .workspace {
+            flex: 1;
             display: flex;
-            justify-content: center;
-            gap: 20px; /* 按钮间距 */
-            margin-top: 30px;
+            min-height: 0;
+            max-width: 1480px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .source-panel {
+            flex: 0 0 min(320px, 32%);
+            min-width: 240px;
+            display: flex;
+            flex-direction: column;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+        }
+
+        .source-panel header {
+            padding: 14px 16px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        .source-panel textarea {
+            flex: 1;
+            min-height: 280px;
+            border: none;
+            padding: 16px;
+            font: inherit;
+            font-size: 0.9375rem;
+            line-height: 1.65;
+            color: var(--text);
+            resize: vertical;
+            background: #f8f9fb;
+        }
+
+        .source-panel textarea:focus {
+            outline: none;
+            background: var(--surface);
+            box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.15);
+        }
+
+        .source-panel .source-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .reader-panel {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reader-panel header {
+            padding: 14px 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .reader-panel header span.hint {
+            font-weight: 400;
+            font-size: 0.8125rem;
+            color: var(--muted);
+        }
+
+        .reader-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px 28px;
+            scroll-behavior: smooth;
+        }
+
+        .reader-empty {
+            color: var(--muted);
+            font-size: 0.9375rem;
+            text-align: center;
+            padding: 48px 24px;
+        }
+
+        .text-block {
+            --block-lit-bg: var(--lit-indigo);
+            --block-lit-ring: var(--lit-indigo-ring);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            line-height: 1.65;
+            font-size: 0.9375rem;
+            color: var(--text);
+            background: transparent;
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .text-block:nth-child(4n+2) {
+            --block-lit-bg: var(--lit-mint);
+            --block-lit-ring: var(--lit-mint-ring);
+        }
+
+        .text-block:hover {
+            background: rgba(15, 23, 42, 0.03);
+        }
+
+        .text-block.is-lit {
+            background: var(--block-lit-bg);
+            box-shadow: inset 0 0 0 1px var(--block-lit-ring), 0 8px 24px rgba(15, 23, 42, 0.05);
+        }
+
+        .text-block .speaker {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .text-block .block-body {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        mark.trace-mark {
+            background: var(--mark-bg);
+            color: var(--text);
+            border-radius: 4px;
+            padding: 0.08em 0.12em;
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            box-decoration-break: clone;
+        }
+
+        .trace-sidebar {
+            flex: 0 0 300px;
+            min-width: 260px;
+            display: flex;
+            flex-direction: column;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+        }
+
+        .trace-sidebar header {
+            padding: 14px 16px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-tree {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 10px 16px;
+        }
+
+        .code-node {
+            margin-bottom: 6px;
+            border-radius: 10px;
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .code-node button.code-hit {
+            width: 100%;
+            text-align: left;
+            font: inherit;
+            cursor: pointer;
+            border: 1px solid transparent;
+            background: rgba(15, 23, 42, 0.03);
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: var(--text);
+            transition: var(--transition-smooth);
+        }
+
+        .code-node button.code-hit:hover {
+            background: rgba(15, 23, 42, 0.055);
+            border-color: rgba(15, 23, 42, 0.06);
+        }
+
+        .code-node.is-active button.code-hit {
+            transform: scale(1.02);
+            background: rgba(15, 23, 42, 0.07);
+            border-color: rgba(99, 102, 241, 0.35);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .code-node.is-pulse button.code-hit {
+            animation: codePulse 0.65s ease-in-out;
+        }
+
+        @keyframes codePulse {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+
+        .code-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .level-pill {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.04em;
+        }
+
+        .level-pill.l1 { background: #e8e4f0; color: #5b5670; }
+        .level-pill.l2 { background: #dfe8e4; color: #4a5c52; }
+        .level-pill.l3 { background: #ebe5dc; color: #6b5f4a; }
+
+        .code-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .code-refs {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-top: 4px;
         }
 
         .loading-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.7); /* 半透明白色覆盖层，更轻盈 */
+            inset: 0;
+            background: rgba(255, 255, 255, 0.72);
             display: flex;
-            justify-content: center;
             align-items: center;
-            border-radius: 12px; /* 统一圆角 */
-            z-index: 10;
+            justify-content: center;
+            z-index: 20;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
+
         .loading-overlay.active {
             opacity: 1;
             visibility: visible;
         }
 
         .loader {
-            border: 4px solid #f3f3f3; /* Light grey */
-            border-top: 4px solid var(--primary-color); /* Blue */
+            width: 36px;
+            height: 36px;
+            border: 3px solid #e8eaef;
+            border-top-color: var(--primary);
             border-radius: 50%;
-            width: 36px; /* 略微缩小 */
-            height: 36px; /* 略微缩小 */
-            animation: spin 1s linear infinite, pulse 1.5s infinite alternate;
+            animation: spin 0.85s linear infinite;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
 
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.2); /* 调整脉冲颜色和强度 */
-            }
-            70% {
-                box-shadow: 0 0 0 15px rgba(0, 122, 255, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(0, 122, 255, 0);
-            }
-        }
-
-        .result-area {
-            flex-grow: 1;
-            background-color: var(--card-bg); /* 结果区背景改为纯白 */
-            border: 1px solid var(--border-color); /* 极细浅灰边框 */
-            padding: 30px; /* 调整内边距 */
-            border-radius: 12px; /* 统一圆角 */
-            min-height: 250px; /* 调整最小高度 */
-            overflow-y: auto;
-            line-height: 1.8; /* 优化行高 */
-            font-size: 16px; /* 调整字体大小 */
-            color: var(--text-main-color);
-        }
-        .result-area h1 {
-            font-size: 2.2em; /* Make H1 larger */
-            border-bottom: 1px solid var(--border-color); /* 更细的分割线 */
-            padding-bottom: 0.8em;
-            margin-bottom: 1.2em;
-            color: var(--text-main-color);
-            font-weight: 700; /* 更粗的H1 */
-        }
-        .result-area h2, .result-area h3, .result-area h4, .result-area h5, .result-area h6 {
-            color: var(--text-main-color);
-            margin-top: 2em; /* 调整 Markdown 标题间距 */
-            margin-bottom: 1em;
-            font-weight: 600;
-        }
-        .result-area p {
-            margin-bottom: 1.5em; /* 增加段落间距 */
-        }
-        .result-area ul, .result-area ol {
-            margin-bottom: 1.5em;
-            padding-left: 30px; /* 调整列表内边距 */
-        }
-        .result-area code {
-            background-color: #F0F2F5; /* 调整代码背景色 */
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-            font-size: 0.9em;
-        }
-        .result-area pre {
-            background-color: #F0F2F5;
-            padding: 20px;
+        .error-banner {
+            margin: 12px 20px;
+            padding: 12px 14px;
             border-radius: 10px;
-            overflow-x: auto;
-            margin-bottom: 2em;
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-            font-size: 0.95em;
-            line-height: 1.6;
+            background: #fef2f2;
+            color: #b91c1c;
+            font-size: 0.875rem;
+            border: 1px solid #fecaca;
         }
 
-        .error {
-            color: #dc3545;
-            text-align: center;
-            margin-top: 25px;
-            font-size: 16px;
-            font-weight: 500;
+        .hidden { display: none !important; }
+
+        @media (max-width: 1100px) {
+            .workspace {
+                flex-wrap: wrap;
+            }
+            .source-panel {
+                flex: 1 1 100%;
+                min-width: 100%;
+            }
+            .reader-panel {
+                flex: 1 1 calc(100% - 320px);
+                min-height: 420px;
+            }
+            .trace-sidebar {
+                flex: 1 1 100%;
+                max-height: 420px;
+            }
         }
 
-        /* Responsive design for mobile */
-        @media (max-width: 768px) {
-            body {
-                padding: 25px;
-                line-height: 1.7;
-            }
-            .main-wrapper {
-                flex-direction: column;
-                min-height: unset;
-                gap: 30px;
-            }
-            .panel {
-                padding: 30px;
-                margin-bottom: 0;
-            }
-            h1 {
-                font-size: 30px;
-                margin-bottom: 30px;
-            }
-            textarea {
-                min-height: 300px;
-                padding: 18px;
-            }
-            button {
-                width: 100%;
-                max-width: 300px;
-                font-size: 16px;
-                padding: 14px 28px;
-            }
-            .button-group {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
-            }
-            .result-area {
-                padding: 25px;
-                font-size: 15px;
-            }
-            .result-area h1 {
-                font-size: 2em;
-                padding-bottom: 0.6em;
-                margin-bottom: 1em;
-            }
+        @media (max-width: 640px) {
+            .topbar { flex-direction: column; align-items: stretch; }
+            .workspace { padding: 12px; }
         }
     </style>
 </head>
 <body>
-    <div class="main-wrapper">
-        <div class="panel input-panel">
-            <h1>访谈语料输入区</h1>
-            <textarea id="interviewText" placeholder="请输入访谈文本..." rows="10"></textarea>
-            <div class="button-group">
-                <button id="analyzeButton">开始 AI 分析</button>
+    <div class="app">
+        <header class="topbar">
+            <div class="brand">InsightAI · 学术溯源</div>
+            <div class="topbar-actions">
+                <button type="button" class="btn" id="btnCopyJson" disabled>复制溯源 JSON</button>
+                <button type="button" class="btn" id="btnCopyReadable" disabled>复制可读摘要</button>
             </div>
-            <div id="loadingIndicator" class="loading" style="display: none;">
-                正在分析中，请稍候...
-            </div>
-        </div>
+        </header>
 
-        <div class="panel result-panel">
-            <h1>三级编码结果区</h1>
-            <div class="button-group">
-                <button id="copyResultButton" style="display: none;">复制结果</button>
-            </div>
-            <div id="resultArea" class="result-area">
-                <!-- 分析结果将显示在这里 -->
-            </div>
-            <div id="errorMessage" class="error"></div>
-            <div id="resultLoadingOverlay" class="loading-overlay">
-                <div class="loader"></div>
-            </div>
-        </div>
+        <main class="workspace">
+            <aside class="source-panel">
+                <header>访谈语料</header>
+                <textarea id="interviewText" placeholder="粘贴访谈转录全文…"></textarea>
+                <div class="source-footer">
+                    <button type="button" class="btn btn-primary" id="analyzeButton" style="width:100%">开始 AI 三级编码</button>
+                </div>
+            </aside>
+
+            <section class="reader-panel" id="readerPanel">
+                <header>
+                    文本阅读器
+                    <span class="hint">点击高亮段落可在右侧定位编码</span>
+                </header>
+                <div id="errorMessage" class="error-banner hidden"></div>
+                <div class="reader-scroll" id="readerScroll">
+                    <div class="reader-empty" id="readerEmpty">完成分析后，原文块将在此呈现，并与右侧编码双向联动。</div>
+                    <div id="readerBlocks" class="hidden"></div>
+                </div>
+                <div id="readerLoading" class="loading-overlay">
+                    <div class="loader" aria-hidden="true"></div>
+                </div>
+            </section>
+
+            <aside class="trace-sidebar">
+                <header>编码树 · 溯源</header>
+                <div class="code-tree" id="codeTree">
+                    <p class="reader-empty" style="padding:16px 8px" id="codeTreeEmpty">编码标签将显示于此；点击标签可照亮对应原文。</p>
+                </div>
+            </aside>
+        </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
-        const analyzeButton = document.getElementById('analyzeButton');
+        /**
+         * @typedef {{ id: string, text: string, speaker: string }} TextBlock
+         * @typedef {{ blockId: string, start?: number, end?: number }} SpanRef
+         * @typedef {{ id: string, name: string, level: number, parentId: string|null, refs: SpanRef[] }} CodeNode
+         * @typedef {{ blocks: TextBlock[], codes: CodeNode[] }} AnalysisPayload
+         */
+
         const interviewText = document.getElementById('interviewText');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const resultArea = document.getElementById('resultArea');
+        const analyzeButton = document.getElementById('analyzeButton');
+        const readerEmpty = document.getElementById('readerEmpty');
+        const readerBlocks = document.getElementById('readerBlocks');
+        const codeTree = document.getElementById('codeTree');
+        const codeTreeEmpty = document.getElementById('codeTreeEmpty');
         const errorMessage = document.getElementById('errorMessage');
-        const copyResultButton = document.getElementById('copyResultButton');
-        const resultLoadingOverlay = document.getElementById('resultLoadingOverlay');
+        const readerLoading = document.getElementById('readerLoading');
+        const btnCopyJson = document.getElementById('btnCopyJson');
+        const btnCopyReadable = document.getElementById('btnCopyReadable');
 
-        // Initial hide copy button and overlay
-        copyResultButton.style.display = 'none';
-        resultLoadingOverlay.classList.remove('active');
+        /** @type {AnalysisPayload | null} */
+        let payload = null;
+        /** @type {string | null} */
+        let activeCodeId = null;
+        /** @type {Map<string, string[]>} blockId -> code ids */
+        let blockToCodes = new Map();
 
-        analyzeButton.addEventListener('click', async () => {
-            const text = interviewText.value.trim();
-            if (!text) {
-                alert('请输入访谈文本再进行分析。');
+        function escapeHtml(s) {
+            return s
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function extractJsonFromModelText(raw) {
+            const t = String(raw).trim();
+            const fence = t.match(/```(?:json)?\s*([\s\S]*?)```/i);
+            if (fence) return JSON.parse(fence[1].trim());
+            return JSON.parse(t);
+        }
+
+        function validatePayload(p) {
+            if (!p || typeof p !== 'object') throw new Error('无效载荷');
+            if (!Array.isArray(p.blocks) || !Array.isArray(p.codes)) throw new Error('缺少 blocks 或 codes');
+            const blockIds = new Set(p.blocks.map(b => b.id));
+            for (const c of p.codes) {
+                if (c.parentId === 'null' || c.parentId === '') c.parentId = null;
+                c.level = Number(c.level);
+                if (![1, 2, 3].includes(c.level)) throw new Error(`编码 ${c.id || ''} 的 level 须为 1/2/3`);
+                if (!c.refs || !c.refs.length) throw new Error(`编码 ${c.id || ''} 缺少 refs`);
+                for (const r of c.refs) {
+                    if (!blockIds.has(r.blockId)) throw new Error(`refs 引用未知 blockId: ${r.blockId}`);
+                }
+            }
+        }
+
+        function attrSel(s) {
+            return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+        }
+
+        function buildBlockIndex() {
+            blockToCodes = new Map();
+            if (!payload) return;
+            for (const c of payload.codes) {
+                for (const r of c.refs) {
+                    if (!blockToCodes.has(r.blockId)) blockToCodes.set(r.blockId, []);
+                    const arr = blockToCodes.get(r.blockId);
+                    if (!arr.includes(c.id)) arr.push(c.id);
+                }
+            }
+        }
+
+        function renderBlockBody(text, refs) {
+            const whole = !refs.length || refs.some(r => r.start == null || r.end == null);
+            if (whole) return escapeHtml(text);
+
+            const sorted = refs.slice().sort((a, b) => a.start - b.start);
+            let out = '';
+            let i = 0;
+            for (const r of sorted) {
+                const s = Math.max(0, r.start);
+                const e = Math.min(text.length, r.end);
+                if (s > i) out += escapeHtml(text.slice(i, s));
+                if (e > s) out += '<mark class="trace-mark">' + escapeHtml(text.slice(s, e)) + '</mark>';
+                i = Math.max(i, e);
+            }
+            if (i < text.length) out += escapeHtml(text.slice(i));
+            return out;
+        }
+
+        function renderReader() {
+            readerBlocks.innerHTML = '';
+            if (!payload || !payload.blocks.length) {
+                readerEmpty.classList.remove('hidden');
+                readerBlocks.classList.add('hidden');
                 return;
             }
+            readerEmpty.classList.add('hidden');
+            readerBlocks.classList.remove('hidden');
 
-            // Show loading states
-            loadingIndicator.classList.add('active');
-            resultLoadingOverlay.classList.add('active');
-            analyzeButton.disabled = true;
-            copyResultButton.style.display = 'none'; // Hide copy button during analysis
-            resultArea.innerHTML = ''; // Clear previous results
-            errorMessage.textContent = ''; // Clear previous errors
+            for (const b of payload.blocks) {
+                const el = document.createElement('article');
+                el.className = 'text-block';
+                el.dataset.blockId = b.id;
+                el.innerHTML =
+                    '<span class="speaker">' + escapeHtml(b.speaker || '说话人') + '</span>' +
+                    '<div class="block-body">' + escapeHtml(b.text) + '</div>';
+                readerBlocks.appendChild(el);
+            }
+            applyHighlights();
+        }
 
-            console.log('开始 AI 分析请求...');
+        function renderCodeTree() {
+            codeTree.innerHTML = '';
+            if (!payload || !payload.codes.length) {
+                codeTree.appendChild(codeTreeEmpty);
+                codeTreeEmpty.style.display = 'block';
+                return;
+            }
+            codeTreeEmpty.style.display = 'none';
+
+            const byParent = new Map();
+            for (const c of payload.codes) {
+                const k = c.parentId || '__root__';
+                if (!byParent.has(k)) byParent.set(k, []);
+                byParent.get(k).push(c);
+            }
+            for (const arr of byParent.values()) {
+                arr.sort((a, b) => (a.level - b.level) || a.id.localeCompare(b.id));
+            }
+
+            function indentFor(level) {
+                return Math.max(0, (level - 1)) * 14;
+            }
+
+            function walk(parentKey) {
+                const list = byParent.get(parentKey) || [];
+                for (const c of list) {
+                    const node = document.createElement('div');
+                    node.className = 'code-node';
+                    node.dataset.codeId = c.id;
+                    node.style.marginLeft = indentFor(c.level) + 'px';
+
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'code-hit';
+                    btn.innerHTML =
+                        '<div class="code-meta">' +
+                        '<span class="level-pill l' + c.level + '">L' + c.level + '</span>' +
+                        '</div>' +
+                        '<div class="code-name">' + escapeHtml(c.name) + '</div>' +
+                        '<div class="code-refs">' + c.refs.length + ' 条原文锚点</div>';
+                    btn.addEventListener('click', () => selectCode(c.id));
+                    node.appendChild(btn);
+                    codeTree.appendChild(node);
+                    walk(c.id);
+                }
+            }
+            walk('__root__');
+            syncSidebarActive();
+        }
+
+        function getRefsForBlock(codeId, blockId) {
+            const code = payload.codes.find(x => x.id === codeId);
+            if (!code) return [];
+            return code.refs.filter(r => r.blockId === blockId);
+        }
+
+        function applyHighlights() {
+            if (!payload) return;
+            readerBlocks.querySelectorAll('.text-block').forEach(el => {
+                const bid = el.dataset.blockId;
+                const body = el.querySelector('.block-body');
+                const block = payload.blocks.find(b => b.id === bid);
+                if (!body || !block) return;
+
+                if (!activeCodeId) {
+                    body.innerHTML = escapeHtml(block.text);
+                    el.classList.remove('is-lit');
+                    return;
+                }
+
+                const refs = getRefsForBlock(activeCodeId, bid);
+                const lit = refs.length > 0;
+                el.classList.toggle('is-lit', lit);
+                body.innerHTML = renderBlockBody(block.text, refs);
+            });
+        }
+
+        function scrollToBlock(blockId) {
+            const el = readerBlocks.querySelector('[data-block-id="' + attrSel(blockId) + '"]');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function selectCode(codeId) {
+            if (!payload) return;
+            activeCodeId = codeId;
+            applyHighlights();
+            syncSidebarActive();
+            const code = payload.codes.find(c => c.id === codeId);
+            if (code && code.refs[0]) scrollToBlock(code.refs[0].blockId);
+        }
+
+        function syncSidebarActive() {
+            codeTree.querySelectorAll('.code-node').forEach(n => {
+                n.classList.toggle('is-active', n.dataset.codeId === activeCodeId);
+            });
+        }
+
+        function pulseCodesForBlock(blockId) {
+            const ids = blockToCodes.get(blockId) || [];
+            if (!ids.length) return;
+            activeCodeId = ids[0];
+            applyHighlights();
+            syncSidebarActive();
+            scrollToBlock(blockId);
+            ids.forEach(cid => {
+                const node = codeTree.querySelector('.code-node[data-code-id="' + attrSel(cid) + '"]');
+                if (!node) return;
+                node.classList.remove('is-pulse');
+                void node.offsetWidth;
+                node.classList.add('is-pulse');
+            });
+            const first = codeTree.querySelector('.code-node[data-code-id="' + attrSel(ids[0]) + '"]');
+            if (first) first.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        readerBlocks.addEventListener('click', (e) => {
+            const block = e.target.closest('.text-block');
+            if (!block || !readerBlocks.contains(block)) return;
+            const bid = block.dataset.blockId;
+            pulseCodesForBlock(bid);
+        });
+
+        function setError(msg) {
+            if (!msg) {
+                errorMessage.classList.add('hidden');
+                errorMessage.textContent = '';
+                return;
+            }
+            errorMessage.textContent = msg;
+            errorMessage.classList.remove('hidden');
+        }
+
+        function setLoading(on) {
+            readerLoading.classList.toggle('active', on);
+            analyzeButton.disabled = on;
+        }
+
+        async function runAnalyze() {
+            const text = interviewText.value.trim();
+            if (!text) {
+                alert('请先粘贴访谈文本。');
+                return;
+            }
+            setError('');
+            setLoading(true);
+            payload = null;
+            activeCodeId = null;
+            btnCopyJson.disabled = true;
+            btnCopyReadable.disabled = true;
+            renderReader();
+            renderCodeTree();
 
             try {
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text }),
                 });
-
-                console.log('请求状态：', response.status, response.statusText);
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+                let rawBody = await response.text();
+                rawBody = rawBody.replace(/^\uFEFF/, '');
+                let data;
+                try {
+                    data = rawBody ? JSON.parse(rawBody) : {};
+                } catch {
+                    const snippet = rawBody.replace(/\s+/g, ' ').trim().slice(0, 160);
+                    const looksHtml = /^\s*</.test(rawBody);
+                    const hint =
+                        looksHtml || response.status === 404
+                            ? '请关闭「仅静态文件」预览：在项目根目录执行 npx wrangler pages dev public，用终端里显示的地址（如 http://127.0.0.1:8788）打开页面，这样 /api/analyze 才会生效。'
+                            : '请检查网络与部署；若本地开发务必使用 wrangler pages dev。';
+                    throw new Error('接口返回的不是 JSON。' + hint + (snippet ? '原文片段：' + snippet : ''));
                 }
 
-                const data = await response.json();
-                console.log('接收到分析结果：', data);
-                
-                const aiResponseContent = data.choices[0].message.content;
-                // Render Markdown content
-                resultArea.innerHTML = marked.parse(aiResponseContent);
-                copyResultButton.style.display = 'inline-flex'; // Show copy button after successful analysis
+                if (!response.ok) {
+                    throw new Error(data.error || ('HTTP ' + response.status));
+                }
 
+                if (data.error && !data.choices) {
+                    throw new Error(data.error);
+                }
 
-            } catch (error) {
-                console.error('AI 分析请求失败：', error);
-                errorMessage.textContent = `分析失败: ${error.message}`;
-                resultArea.innerHTML = `<p style="color: red;">分析过程中发生错误：${error.message}</p>`;
+                const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+                if (!content) throw new Error('模型未返回内容');
+
+                const parsed = extractJsonFromModelText(content);
+                validatePayload(parsed);
+                payload = parsed;
+                buildBlockIndex();
+                renderReader();
+                renderCodeTree();
+                btnCopyJson.disabled = false;
+                btnCopyReadable.disabled = false;
+            } catch (err) {
+                console.error(err);
+                setError('分析失败：' + err.message);
+                payload = null;
+                renderReader();
+                renderCodeTree();
             } finally {
-                // Hide loading states
-                loadingIndicator.classList.remove('active');
-                resultLoadingOverlay.classList.remove('active');
-                analyzeButton.disabled = false;
-                console.log('AI 分析请求完成。');
+                setLoading(false);
+            }
+        }
+
+        analyzeButton.addEventListener('click', runAnalyze);
+
+        btnCopyJson.addEventListener('click', async () => {
+            if (!payload) return;
+            try {
+                await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+                alert('已复制溯源 JSON');
+            } catch (e) {
+                alert('复制失败，请手动选择文本');
             }
         });
 
-        copyResultButton.addEventListener('click', async () => {
-            const textToCopy = resultArea.innerText; // Get the rendered text
+        btnCopyReadable.addEventListener('click', async () => {
+            if (!payload) return;
+            const lines = [];
+            for (const c of payload.codes) {
+                lines.push('【L' + c.level + '】' + c.name + '（' + c.id + '）');
+                for (const r of c.refs) {
+                    const b = payload.blocks.find(x => x.id === r.blockId);
+                    const excerpt = b ? b.text.replace(/\s+/g, ' ').slice(0, 120) : '';
+                    lines.push('  ·锚点 ' + r.blockId + (r.start != null ? ' [' + r.start + ',' + r.end + ']' : '') + ' — ' + excerpt);
+                }
+                lines.push('');
+            }
             try {
-                await navigator.clipboard.writeText(textToCopy);
-                alert('结果已复制到剪贴板！');
-            } catch (err) {
-                console.error('复制失败:', err);
-                alert('复制失败，请手动复制。');
+                await navigator.clipboard.writeText(lines.join('\n'));
+                alert('已复制可读摘要');
+            } catch (e) {
+                alert('复制失败');
             }
         });
     </script>
