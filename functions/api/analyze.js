@@ -7,6 +7,9 @@ import academicKnowledge from "../../src/data/academic-knowledge.json";
  */
 
 const MODEL = "glm-4.5-air";
+const REQUEST_BODY_MAX_BYTES = 10 * 1024 * 1024;
+// /api/analyze 会顺序调用 3 次上游模型；单次给足裕量避免误触发超时
+const UPSTREAM_FETCH_TIMEOUT_MS = 180_000;
 
 function flattenText(value) {
   if (value == null) return "";
@@ -103,45 +106,59 @@ async function callZhipuJson(endpoint, apiKey, messages) {
     messages,
   };
 
-  let response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ ...baseBody, response_format: { type: "json_object" } }),
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), UPSTREAM_FETCH_TIMEOUT_MS);
 
-  if (response.status === 400) {
-    response = await fetch(endpoint, {
+  try {
+    let response = await fetch(endpoint, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(baseBody),
+      body: JSON.stringify({ ...baseBody, response_format: { type: "json_object" } }),
+      signal: controller.signal,
     });
-  }
 
-  const rawText = await response.text();
-  let data;
-  try {
-    data = JSON.parse(rawText);
-  } catch {
-    throw new Error(`上游返回非 JSON: ${rawText.slice(0, 200)}`);
-  }
-  if (!response.ok) {
-    const msg = data?.error?.message || data?.message || "上游请求失败";
-    throw new Error(msg);
-  }
-  const content = data?.choices?.[0]?.message?.content;
-  if (!content) {
-    throw new Error("模型未返回内容");
-  }
-  try {
-    return parseModelJson(content);
-  } catch {
-    throw new Error(`模型返回内容不是合法 JSON: ${String(content).slice(0, 200)}`);
+    if (response.status === 400) {
+      response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(baseBody),
+        signal: controller.signal,
+      });
+    }
+
+    const rawText = await response.text();
+    let data;
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      throw new Error(`上游返回非 JSON: ${rawText.slice(0, 200)}`);
+    }
+    if (!response.ok) {
+      const msg = data?.error?.message || data?.message || "上游请求失败";
+      throw new Error(msg);
+    }
+    const content = data?.choices?.[0]?.message?.content;
+    if (!content) {
+      throw new Error("模型未返回内容");
+    }
+    try {
+      return parseModelJson(content);
+    } catch {
+      throw new Error(`模型返回内容不是合法 JSON: ${String(content).slice(0, 200)}`);
+    }
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      throw new Error(`上游请求超时（${Math.round(UPSTREAM_FETCH_TIMEOUT_MS / 1000)}s）`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
@@ -288,6 +305,17 @@ export async function onRequest(context) {
   }
 
   try {
+    const contentLengthHeader = context.request.headers.get("content-length");
+    if (contentLengthHeader) {
+      const len = Number(contentLengthHeader);
+      if (Number.isFinite(len) && len > REQUEST_BODY_MAX_BYTES) {
+        return new Response(JSON.stringify({ error: "请求体过大（最大允许 10mb）" }), {
+          status: 413,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
+
     const { text } = await context.request.json();
     if (!text || typeof text !== "string" || !text.trim()) {
       return new Response(JSON.stringify({ error: "缺少有效 text" }), {
@@ -303,6 +331,15 @@ export async function onRequest(context) {
         headers: { "Content-Type": "application/json" },
       });
     }
+    const apiKeyStr = String(apiKey);
+    // 典型问题：.dev.vars 仍是占位符“你的key”，会导致 Authorization header 出现非 ASCII
+    if (/[^\x00-\x7F]/.test(apiKeyStr)) {
+      return new Response(JSON.stringify({ error: "ZHIPU_API_KEY 似乎未替换（包含非 ASCII，可能仍为占位符）" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    console.error("ZHIPU_API_KEY loaded (len):", apiKeyStr.length);
 
     const endpoint = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
     const { processCoding, patternCoding } = extractKnowledgeRules();
@@ -388,8 +425,9 @@ export async function onRequest(context) {
     return new Response(JSON.stringify(payload), {
       headers: { "Content-Type": "application/json" },
     });
-  } catch (err) {
-    return new Response(JSON.stringify({ error: err.message || String(err) }), {
+  } catch (error) {
+    console.error("API Error Details:", error);
+    return new Response(JSON.stringify({ error: error?.message || String(error) }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

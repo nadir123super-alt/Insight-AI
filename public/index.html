@@ -2058,11 +2058,20 @@
 
             try {
                 await ensureAcademicBaseReady();
-                const response = await fetch('/api/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text }),
-                });
+                const abortController = new AbortController();
+                // /api/analyze 内部会顺序调用上游 3 次模型；整体需要更久容错
+                const timeoutId = window.setTimeout(() => abortController.abort(), 300000);
+                let response;
+                try {
+                    response = await fetch('/api/analyze', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text }),
+                        signal: abortController.signal,
+                    });
+                } finally {
+                    window.clearTimeout(timeoutId);
+                }
                 let rawBody = await response.text();
                 rawBody = rawBody.replace(/^\uFEFF/, '');
                 let data;
@@ -2101,7 +2110,7 @@
                 renderCodeTree();
             } catch (err) {
                 console.error(err);
-                setError('分析失败：' + err.message);
+                setError('分析失败：' + (err?.message || String(err)));
                 payload = null;
                 isLogicCanvasVisible = false;
                 if (logicCanvasSection) logicCanvasSection.classList.add('hidden');
