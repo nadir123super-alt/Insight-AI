@@ -70,6 +70,31 @@
             align-items: center;
         }
 
+        .view-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 10px 20px 0;
+            max-width: 1480px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .tab-btn {
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--muted);
+            border-radius: 999px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 0.82rem;
+        }
+
+        .tab-btn.active {
+            color: #1d4ed8;
+            border-color: rgba(37, 99, 235, 0.35);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
         button.btn {
             font-family: inherit;
             font-size: 0.875rem;
@@ -104,6 +129,37 @@
             opacity: 0.55;
             cursor: not-allowed;
             box-shadow: none;
+        }
+
+        button.btn.is-loading {
+            background: rgba(37, 99, 235, 0.16) !important;
+            color: rgba(29, 78, 216, 0.95) !important;
+            border-color: rgba(37, 99, 235, 0.18) !important;
+            box-shadow: none !important;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            top: 18px;
+            transform: translateX(-50%);
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.92);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            letter-spacing: -0.01em;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.26);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 160ms ease, transform 160ms ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
 
         .workspace {
@@ -248,6 +304,56 @@
             word-break: break-word;
         }
 
+        .text-block .block-tags {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .code-badge {
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            background: rgba(37, 99, 235, 0.1);
+            color: #1d4ed8;
+            border-radius: 999px;
+            padding: 3px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .code-badge:hover {
+            background: rgba(37, 99, 235, 0.16);
+            border-color: rgba(37, 99, 235, 0.35);
+        }
+
+        .basis-panel {
+            margin-top: 8px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.04);
+            border: 1px dashed rgba(15, 23, 42, 0.15);
+            font-size: 0.82rem;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        .basis-title {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .text-block.is-pulse {
+            animation: blockPulse 0.38s ease-in-out 2;
+        }
+
+        @keyframes blockPulse {
+            0% { transform: translateY(0); box-shadow: inset 0 0 0 1px var(--block-lit-ring), 0 8px 24px rgba(15, 23, 42, 0.05); }
+            50% { transform: translateY(-1px); box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.45), 0 12px 30px rgba(37, 99, 235, 0.2); }
+            100% { transform: translateY(0); box-shadow: inset 0 0 0 1px var(--block-lit-ring), 0 8px 24px rgba(15, 23, 42, 0.05); }
+        }
+
         mark.trace-mark {
             background: var(--mark-bg);
             color: var(--text);
@@ -286,10 +392,41 @@
             margin-bottom: 6px;
             border-radius: 10px;
             transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+        }
+
+        .tree-node {
+            position: relative;
+        }
+
+        .tree-node .code-node {
+            margin-bottom: 4px;
+        }
+
+        .tree-children {
+            margin-left: 14px;
+            padding-left: 12px;
+            border-left: 1px dashed rgba(15, 23, 42, 0.22);
+        }
+
+        .tree-toggle {
+            display: inline-block;
+            width: 14px;
+            color: var(--muted);
+            margin-right: 6px;
+            transition: transform 0.2s ease;
+            font-weight: 700;
+        }
+
+        .tree-toggle.is-expanded {
+            transform: rotate(90deg);
         }
 
         .code-node button.code-hit {
-            width: 100%;
+            flex: 1;
+            width: auto;
             text-align: left;
             font: inherit;
             cursor: pointer;
@@ -301,6 +438,14 @@
             transition: var(--transition-smooth);
         }
 
+        .code-pick {
+            flex: 0 0 auto;
+            width: 16px;
+            margin-top: 14px;
+            accent-color: #2563eb;
+            cursor: pointer;
+        }
+
         .code-node button.code-hit:hover {
             background: rgba(15, 23, 42, 0.055);
             border-color: rgba(15, 23, 42, 0.06);
@@ -308,9 +453,21 @@
 
         .code-node.is-active button.code-hit {
             transform: scale(1.02);
-            background: rgba(15, 23, 42, 0.07);
-            border-color: rgba(99, 102, 241, 0.35);
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+            background: rgba(37, 99, 235, 0.14);
+            border-color: rgba(37, 99, 235, 0.55);
+            box-shadow:
+                0 10px 24px rgba(37, 99, 235, 0.14),
+                0 6px 20px rgba(15, 23, 42, 0.08),
+                inset 4px 0 0 rgba(37, 99, 235, 0.95);
+        }
+
+        .code-node.is-active .code-name {
+            font-weight: 700;
+            color: #0b2a6b;
+        }
+
+        .code-node.is-active .code-refs {
+            color: rgba(11, 42, 107, 0.78);
         }
 
         .code-node.is-pulse button.code-hit {
@@ -397,6 +554,319 @@
 
         .hidden { display: none !important; }
 
+        .modeling-wrap {
+            max-width: 1480px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 16px 20px 20px;
+        }
+
+        .modeling-canvas {
+            min-height: 420px;
+            position: relative;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: auto;
+            padding: 16px;
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(15, 23, 42, 0.12) 1px, transparent 1.2px);
+            background-size: 16px 16px;
+            background-position: 0 0;
+        }
+
+        .model-lines {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .model-layout {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: stretch;
+            gap: 20px;
+            min-height: 388px;
+            min-width: 980px;
+        }
+
+        .model-tree {
+            flex: 1 1 auto;
+            display: flex;
+            align-items: stretch;
+            gap: 28px;
+            padding: 14px 6px 14px 2px;
+            border-right: 1px dashed rgba(15, 23, 42, 0.12);
+        }
+
+        .l3-column,
+        .l2-column,
+        .l1-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .l3-column {
+            min-width: 210px;
+            justify-content: center;
+        }
+
+        .l2-column {
+            min-width: 250px;
+            justify-content: flex-start;
+        }
+
+        .l1-column {
+            min-width: 280px;
+            justify-content: flex-start;
+        }
+
+        .tree-row {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .model-edge {
+            pointer-events: stroke;
+            cursor: pointer;
+        }
+
+        .model-edge-label {
+            paint-order: stroke fill;
+            stroke: rgba(255, 255, 255, 0.98);
+            stroke-width: 3.25px;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+        }
+
+        .model-node {
+            min-width: 120px;
+            max-width: 220px;
+            padding: 8px 10px;
+            border: 1px solid rgba(37, 99, 235, 0.28);
+            border-radius: 10px;
+            background: rgba(237, 242, 255, 0.9);
+            font-size: 0.82rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .model-node.is-core-l3 {
+            background: rgba(191, 219, 254, 0.92);
+            border: 2px solid rgba(29, 78, 216, 0.75);
+            box-shadow:
+                0 10px 28px rgba(37, 99, 235, 0.18),
+                0 0 0 10px rgba(147, 197, 253, 0.18);
+        }
+
+        .empty-tip {
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .logic-graph-scroll {
+            width: 100%;
+            height: 100%;
+            overflow-x: auto;
+            overflow-y: auto;
+            padding-bottom: 10px;
+        }
+
+        .logic-graph-canvas {
+            width: max-content;
+            min-width: 100%;
+            height: 100%;
+            padding-right: 60px;
+            background: radial-gradient(circle at 1px 1px, rgba(15, 23, 42, 0.08) 1px, transparent 1.2px);
+            background-size: 18px 18px;
+            background-position: 0 0;
+        }
+
+        .logic-chains {
+            position: relative;
+            min-width: 980px;
+            padding: 18px;
+        }
+
+        .logic-chain {
+            position: relative;
+            padding: 18px 60px 22px 18px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            border-radius: 14px;
+            box-shadow: 0 8px 26px rgba(15, 23, 42, 0.08);
+            margin-bottom: 48px;
+        }
+
+        .logic-chain:last-child {
+            margin-bottom: 0;
+        }
+
+        .logic-chain-title {
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: #111827;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .logic-chain-title .meta {
+            font-weight: 600;
+            font-size: 0.78rem;
+            color: #6b7280;
+        }
+
+        .logic-chain-stage {
+            position: relative;
+            overflow: visible;
+        }
+
+        .logic-chain-edges {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .logic-chain-nodes {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+        }
+
+        .logic-chain-labels {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .logic-chain-node {
+            position: absolute;
+            width: 250px;
+            max-width: 250px;
+            height: auto;
+            min-height: 40px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(29, 78, 216, 0.34);
+            background: rgba(239, 246, 255, 0.95);
+            color: #0f172a;
+            box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+            user-select: none;
+            white-space: normal;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .logic-chain-node[data-level="3"] {
+            border: 2px solid rgba(29, 78, 216, 0.8);
+            background: rgba(191, 219, 254, 0.96);
+        }
+
+        .logic-chain-node[data-level="2"] {
+            border: 1px solid rgba(29, 78, 216, 0.45);
+            background: rgba(219, 234, 254, 0.96);
+        }
+
+        .logic-chain-node-title {
+            font-weight: 700;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .logic-chain-node-sub {
+            margin-top: 6px;
+            font-size: 0.74rem;
+            color: rgba(17, 24, 39, 0.7);
+            line-height: 1.5;
+            display: block;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .logic-chain-label {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 4px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(203, 213, 225, 0.9);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+            color: #1f2937;
+            font-size: 12px;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .logic-inline {
+            max-width: 1480px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px 26px;
+        }
+
+        .logic-inline.hidden {
+            display: none;
+        }
+
+        .logic-inline-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px 12px 0 0;
+            font-weight: 700;
+        }
+
+        .logic-inline-body {
+            height: min(820px, 78vh);
+            background: #fff;
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        }
+
+        .memo-panel {
+            max-width: 1480px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 12px 20px 0;
+        }
+
+        .memo-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            padding: 14px;
+        }
+
+        .memo-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .memo-text {
+            white-space: pre-wrap;
+            line-height: 1.75;
+            font-size: 0.93rem;
+        }
+
         @media (max-width: 1100px) {
             .workspace {
                 flex-wrap: wrap;
@@ -426,12 +896,16 @@
         <header class="topbar">
             <div class="brand">InsightAI · 学术溯源</div>
             <div class="topbar-actions">
-                <button type="button" class="btn" id="btnCopyJson" disabled>复制溯源 JSON</button>
-                <button type="button" class="btn" id="btnCopyReadable" disabled>复制可读摘要</button>
+                <button type="button" class="btn btn-primary" id="btnSmartConnectGlobal">智能生成关联</button>
+                <button type="button" class="btn btn-primary" id="btnGenerateMemo">生成研究备忘录</button>
+                <button type="button" class="btn btn-primary" id="btnExportExcel">生成并下载编码表</button>
             </div>
         </header>
+        <div class="view-tabs">
+            <button class="tab-btn active" id="tabCoding">编码工作台</button>
+        </div>
 
-        <main class="workspace">
+        <main class="workspace" id="codingView">
             <aside class="source-panel">
                 <header>访谈语料</header>
                 <textarea id="interviewText" placeholder="粘贴访谈转录全文…"></textarea>
@@ -462,13 +936,41 @@
                 </div>
             </aside>
         </main>
+
+        <section class="logic-inline hidden" id="logicCanvasSection" aria-label="Independent Logic Chains 逻辑线索链画布">
+            <div class="logic-inline-header">
+                <span>Independent Logic Chains</span>
+                <span class="empty-tip" id="logicCanvasHint">点击顶部「智能生成关联」后，这里将渲染逻辑线索链画布。</span>
+                <button type="button" class="btn btn-primary" id="btnDownloadLogicImage">下载为图片</button>
+            </div>
+            <div class="logic-inline-body">
+                <div class="logic-graph-scroll" id="logicGraphScroll">
+                    <div class="logic-graph-canvas" id="logicGraphCanvas"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="memo-panel hidden" id="memoPanel">
+            <div class="memo-card">
+                <div style="font-weight:600">研究备忘录（AI 草稿）</div>
+                <div class="memo-text" id="memoText" style="margin-top:8px"></div>
+                <div class="memo-actions">
+                    <button type="button" class="btn btn-primary" id="btnExportWord">导出 Word</button>
+                    <button type="button" class="btn btn-primary" id="btnExportPdf">导出 PDF</button>
+                </div>
+            </div>
+        </section>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
         /**
          * @typedef {{ id: string, text: string, speaker: string }} TextBlock
          * @typedef {{ blockId: string, start?: number, end?: number }} SpanRef
-         * @typedef {{ id: string, name: string, level: number, parentId: string|null, refs: SpanRef[] }} CodeNode
+         * @typedef {{ id: string, name: string, level: number, parentId: string|null, refs: SpanRef[], basisId?: string }} CodeNode
          * @typedef {{ blocks: TextBlock[], codes: CodeNode[] }} AnalysisPayload
          */
 
@@ -480,15 +982,166 @@
         const codeTreeEmpty = document.getElementById('codeTreeEmpty');
         const errorMessage = document.getElementById('errorMessage');
         const readerLoading = document.getElementById('readerLoading');
-        const btnCopyJson = document.getElementById('btnCopyJson');
-        const btnCopyReadable = document.getElementById('btnCopyReadable');
+        const btnExportExcel = document.getElementById('btnExportExcel');
+        const btnSmartConnectGlobal = document.getElementById('btnSmartConnectGlobal');
+        const btnGenerateMemo = document.getElementById('btnGenerateMemo');
+        const btnDownloadLogicImage = document.getElementById('btnDownloadLogicImage');
+        const memoPanel = document.getElementById('memoPanel');
+        const memoText = document.getElementById('memoText');
+        const btnExportWord = document.getElementById('btnExportWord');
+        const btnExportPdf = document.getElementById('btnExportPdf');
+        const tabCoding = document.getElementById('tabCoding');
+        const codingView = document.getElementById('codingView');
+        const logicGraphScroll = document.getElementById('logicGraphScroll');
+        const logicGraphCanvas = document.getElementById('logicGraphCanvas');
+        const logicCanvasSection = document.getElementById('logicCanvasSection');
+        const logicCanvasHint = document.getElementById('logicCanvasHint');
 
         /** @type {AnalysisPayload | null} */
         let payload = null;
+        /** @type {{ id: string, topic: string, definition: string, paradigm: string, content: string }[]} */
+        let academicBase = [];
+        /** @type {Promise<void> | null} */
+        let academicBaseReady = null;
         /** @type {string | null} */
         let activeCodeId = null;
+        /** @type {string | null} */
+        let expandedBadgeKey = null;
         /** @type {Map<string, string[]>} blockId -> code ids */
         let blockToCodes = new Map();
+        /** @type {Map<string, string|null>} */
+        let parentByCodeId = new Map();
+        /** @type {Map<string, any[]>} */
+        let childrenByCodeId = new Map();
+        /** @type {Set<string>} */
+        let expandedTreeIds = new Set();
+        /** @type {boolean} */
+        let isLogicCanvasVisible = false;
+        /** @type {string} */
+        let memoDraft = '';
+        /** @type {boolean} */
+        let isGeneratingRelations = false;
+        /** @type {boolean} */
+        let isExportingExcel = false;
+        /** @type {boolean} */
+        let isGeneratingMemo = false;
+        /** @type {boolean} */
+        let isDownloadingLogicImage = false;
+
+        let toastTimer = null;
+        function showToast(message) {
+            const text = String(message || '').trim();
+            if (!text) return;
+            let el = document.getElementById('toast');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'toast';
+                el.className = 'toast';
+                el.setAttribute('role', 'status');
+                el.setAttribute('aria-live', 'polite');
+                document.body.appendChild(el);
+            }
+            el.textContent = text;
+            el.classList.add('show');
+            if (toastTimer) window.clearTimeout(toastTimer);
+            toastTimer = window.setTimeout(() => {
+                el.classList.remove('show');
+            }, 1600);
+        }
+
+        function hasCodingData() {
+            return Boolean(payload && Array.isArray(payload.codes) && payload.codes.length > 0);
+        }
+
+        function guardRequiresCoding() {
+            if (hasCodingData()) return true;
+            showToast('请完成一次编码');
+            return false;
+        }
+
+        function setButtonLoading(btn, on) {
+            if (!btn) return;
+            btn.classList.toggle('is-loading', Boolean(on));
+            btn.disabled = Boolean(on);
+        }
+        if (btnDownloadLogicImage) btnDownloadLogicImage.addEventListener('click', handleDownloadLogicImage);
+
+        function safeFilenamePart(s) {
+            return (String(s || '').trim().replace(/[\\/:*?"<>|]/g, '_').replace(/\s+/g, '_').slice(0, 48)) || '未命名';
+        }
+
+        async function handleDownloadLogicImage() {
+            const targetElement = logicGraphScroll || logicGraphCanvas;
+            if (!targetElement) return;
+            if (isDownloadingLogicImage) return;
+            const chainsEl = (logicGraphCanvas || targetElement).querySelector?.('.logic-chains');
+            if (!chainsEl) {
+                showToast('暂无可下载的逻辑链路图');
+                return;
+            }
+
+            const h2c = window.html2canvas;
+            if (typeof h2c !== 'function') {
+                alert('图片导出库未加载。请在项目根目录执行：npm install html2canvas，并确保页面已正确加载相关脚本。');
+                return;
+            }
+
+            isDownloadingLogicImage = true;
+            setButtonLoading(btnDownloadLogicImage, true);
+            try {
+                const prev = {
+                    overflowX: targetElement.style.overflowX,
+                    overflowY: targetElement.style.overflowY,
+                    scrollTop: targetElement.scrollTop,
+                    scrollLeft: targetElement.scrollLeft,
+                };
+
+                // 避免截图里出现滚动条；并确保捕获完整滚动内容
+                targetElement.style.overflowX = 'visible';
+                targetElement.style.overflowY = 'visible';
+                targetElement.scrollTop = 0;
+                targetElement.scrollLeft = 0;
+
+                const captureWidth = Math.max(10, targetElement.scrollWidth);
+                const captureHeight = Math.max(10, targetElement.scrollHeight);
+
+                const canvas = await h2c(targetElement, {
+                    useCORS: true,
+                    backgroundColor: null,
+                    scale: 2,
+                    width: captureWidth,
+                    height: captureHeight,
+                    windowWidth: captureWidth,
+                    windowHeight: captureHeight,
+                    scrollX: 0,
+                    scrollY: 0,
+                });
+
+                targetElement.style.overflowX = prev.overflowX;
+                targetElement.style.overflowY = prev.overflowY;
+                targetElement.scrollTop = prev.scrollTop;
+                targetElement.scrollLeft = prev.scrollLeft;
+
+                const titles = Array.from(
+                    (logicGraphCanvas || targetElement).querySelectorAll('.logic-chain-title > span:first-child')
+                ).map(el => String(el.textContent || '').trim()).filter(Boolean);
+                const chainName = titles.length === 1 ? titles[0] : '线索链合集';
+                const filename = `逻辑链路图_${safeFilenamePart(chainName)}_${formatDateYMD(new Date())}.png`;
+
+                const url = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } finally {
+                isDownloadingLogicImage = false;
+                setButtonLoading(btnDownloadLogicImage, false);
+            }
+        }
+        let logicGraphChart = null;
 
         function escapeHtml(s) {
             return s
@@ -498,11 +1151,85 @@
                 .replace(/"/g, '&quot;');
         }
 
-        function extractJsonFromModelText(raw) {
-            const t = String(raw).trim();
-            const fence = t.match(/```(?:json)?\s*([\s\S]*?)```/i);
-            if (fence) return JSON.parse(fence[1].trim());
-            return JSON.parse(t);
+        function flattenToText(input, lines = []) {
+            if (input == null) return lines;
+            if (Array.isArray(input)) {
+                input.forEach(v => flattenToText(v, lines));
+                return lines;
+            }
+            if (typeof input === 'object') {
+                for (const [k, v] of Object.entries(input)) {
+                    if (v != null && typeof v !== 'object') {
+                        lines.push(k + ': ' + String(v));
+                    } else {
+                        lines.push(k);
+                        flattenToText(v, lines);
+                    }
+                }
+                return lines;
+            }
+            lines.push(String(input));
+            return lines;
+        }
+
+        function normalizeAcademicKnowledge(raw) {
+            const arr = Array.isArray(raw) ? raw : [raw];
+            const out = [];
+            let fallbackIndex = 0;
+
+            for (const item of arr) {
+                if (!item || typeof item !== 'object') continue;
+                const topic = item.topic || item.知识点 || item.knowledgePoint || '未命名规范';
+                const allText = flattenToText(item).join('；').replace(/\s+/g, ' ').trim();
+                let id = '';
+                if (String(topic).includes('过程编码') || allText.includes('过程编码')) {
+                    id = 'Saldana-A';
+                } else if (String(topic).includes('模式编码') || allText.includes('模式编码')) {
+                    id = 'Saldana-B';
+                } else {
+                    id = 'Charmaz-' + String.fromCharCode(65 + fallbackIndex);
+                    fallbackIndex += 1;
+                }
+                const contentSource =
+                    item.content ||
+                    item.theoryRules ||
+                    item.理论规则 ||
+                    item.applicationLogic ||
+                    item.应用逻辑 ||
+                    item.知识点 ||
+                    item;
+                const content = flattenToText(contentSource).join('；').replace(/\s+/g, ' ').trim();
+                const definition = flattenToText(item.定义 || item.definition || item.理论规则 || item.theoryRules || item).join('；').replace(/\s+/g, ' ').trim();
+                out.push({
+                    id,
+                    topic: String(topic),
+                    definition: definition || content || '无定义',
+                    paradigm: String(String(topic).includes('编码') ? '扎根理论编码范式' : '质性研究方法论'),
+                    content: content || '无详细内容',
+                });
+            }
+            return out;
+        }
+
+        async function ensureAcademicBaseReady() {
+            if (academicBaseReady) return academicBaseReady;
+            academicBaseReady = (async () => {
+                const candidates = ['/data/academic-knowledge.json', '/src/data/academic-knowledge.json'];
+                let raw = null;
+                for (const url of candidates) {
+                    try {
+                        const res = await fetch(url, { cache: 'no-store' });
+                        if (!res.ok) continue;
+                        raw = await res.json();
+                        break;
+                    } catch (_) {}
+                }
+                if (!raw) {
+                    throw new Error('无法加载 academic-knowledge.json，请确认数据文件可访问。');
+                }
+                academicBase = normalizeAcademicKnowledge(raw);
+            })();
+            return academicBaseReady;
         }
 
         function validatePayload(p) {
@@ -513,6 +1240,7 @@
                 if (c.parentId === 'null' || c.parentId === '') c.parentId = null;
                 c.level = Number(c.level);
                 if (![1, 2, 3].includes(c.level)) throw new Error(`编码 ${c.id || ''} 的 level 须为 1/2/3`);
+                if (!c.basisId || typeof c.basisId !== 'string') throw new Error(`编码 ${c.id || ''} 缺少 basisId`);
                 if (!c.refs || !c.refs.length) throw new Error(`编码 ${c.id || ''} 缺少 refs`);
                 for (const r of c.refs) {
                     if (!blockIds.has(r.blockId)) throw new Error(`refs 引用未知 blockId: ${r.blockId}`);
@@ -524,6 +1252,521 @@
             return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
         }
 
+        function getBasisById(basisId) {
+            if (!basisId) return null;
+            return academicBase.find(x => x.id === basisId) || null;
+        }
+
+        function switchTab(tab) {
+            const modeling = tab === 'modeling';
+            if (tabCoding) tabCoding.classList.toggle('active', !modeling);
+            const target = modeling ? (logicCanvasSection || codingView) : codingView;
+            if (target && target.scrollIntoView) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function buildLogicalSubGraphData() {
+            return { nodes: [], links: [] };
+        }
+
+        function openLogicModalWithGraph(subGraphData) {
+            if (!logicGraphCanvas || !logicCanvasSection) return;
+            isLogicCanvasVisible = true;
+            logicCanvasSection.classList.remove('hidden');
+            if (logicCanvasHint) logicCanvasHint.textContent = '';
+            renderIndependentLogicChains(subGraphData);
+            logicCanvasSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        /**
+         * Independent Logic Chains
+         * - 数据清洗：仅保留出现在 links 的 source/target 的节点
+         * - 分组：连通分量（按无向连通）
+         * - 布局：组件纵向排列，组件内从左到右分层（近似 dag 布局），分支竖向对齐
+         * - 绘制：SVG 贝塞尔曲线 + HTML 白底标签层（最高优先级防遮挡）
+         */
+        const LOGIC_CHAIN_LAYOUT = {
+            cardWidth: 250,
+            cardHeight: 40,
+            cardPadX: 12,
+            cardPadY: 10,
+            colGap: 120,
+            rowGap: 120,
+            chainMinHeight: 0,
+            chainPadding: 18,
+            labelLift: 14,
+            bezierDxMin: 72,
+            bezierDxMax: 180,
+            chainRightPad: 60,
+        };
+
+        /** @type {null | { width:number, height:number, nodes:any[], edges:any[], labels:any[] }} */
+        let logicChainsRenderState = null;
+
+        function renderIndependentLogicChains(subGraphData) {
+            const cleaned = buildCleanLogicGraph(subGraphData);
+            const components = buildConnectedComponents(cleaned.nodes, cleaned.links);
+
+            logicGraphCanvas.innerHTML = '';
+            const wrap = document.createElement('div');
+            wrap.className = 'logic-chains';
+            logicGraphCanvas.appendChild(wrap);
+
+            const allRenderNodes = [];
+            const allRenderEdges = [];
+            const allRenderLabels = [];
+            let maxStageWidth = 0;
+            let totalStageHeight = 0;
+
+            if (!components.length) {
+                wrap.innerHTML = '<div class="empty-tip" style="padding:16px 8px">暂无可用的独立逻辑线索链</div>';
+                logicChainsRenderState = null;
+                return;
+            }
+
+            components.forEach((component, idx) => {
+                const laidOut = layoutLogicComponent(component.nodes, component.links);
+                maxStageWidth = Math.max(maxStageWidth, laidOut.width);
+                totalStageHeight += Math.max(laidOut.height, LOGIC_CHAIN_LAYOUT.chainMinHeight);
+                if (idx < components.length - 1) totalStageHeight += 48;
+                const chainEl = document.createElement('section');
+                chainEl.className = 'logic-chain';
+                chainEl.dataset.chainIndex = String(idx + 1);
+
+                const title = document.createElement('div');
+                title.className = 'logic-chain-title';
+                const labelText = document.createElement('span');
+                labelText.textContent = '线索链 ' + String.fromCharCode(65 + (idx % 26));
+                const meta = document.createElement('span');
+                meta.className = 'meta';
+                meta.textContent = `节点 ${laidOut.nodes.length} · 关系 ${laidOut.links.length}`;
+                title.appendChild(labelText);
+                title.appendChild(meta);
+                chainEl.appendChild(title);
+
+                const stage = document.createElement('div');
+                stage.className = 'logic-chain-stage';
+                stage.style.width = laidOut.width + 'px';
+                stage.style.height = Math.max(laidOut.height, LOGIC_CHAIN_LAYOUT.chainMinHeight) + 'px';
+
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('class', 'logic-chain-edges');
+                svg.setAttribute('width', String(laidOut.width));
+                svg.setAttribute('height', String(Math.max(laidOut.height, LOGIC_CHAIN_LAYOUT.chainMinHeight)));
+                svg.setAttribute('viewBox', `0 0 ${laidOut.width} ${Math.max(laidOut.height, LOGIC_CHAIN_LAYOUT.chainMinHeight)}`);
+
+                const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+                marker.setAttribute('id', `logicArrow_${idx}`);
+                marker.setAttribute('markerWidth', '12');
+                marker.setAttribute('markerHeight', '12');
+                marker.setAttribute('refX', '11');
+                marker.setAttribute('refY', '6');
+                marker.setAttribute('orient', 'auto');
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', 'M0,0 L12,6 L0,12 z');
+                path.setAttribute('fill', '#334155');
+                marker.appendChild(path);
+                defs.appendChild(marker);
+                svg.appendChild(defs);
+
+                const nodesLayer = document.createElement('div');
+                nodesLayer.className = 'logic-chain-nodes';
+                const labelsLayer = document.createElement('div');
+                labelsLayer.className = 'logic-chain-labels';
+
+                const nodeIdToCardEl = new Map();
+                for (const n of laidOut.nodes) {
+                    const card = document.createElement('div');
+                    card.className = 'logic-chain-node';
+                    card.dataset.level = String(n.level || '');
+                    card.dataset.nodeId = String(n.id || '');
+                    card.style.left = n.x.toFixed(1) + 'px';
+                    card.style.top = n.y.toFixed(1) + 'px';
+
+                    const t = document.createElement('div');
+                    t.className = 'logic-chain-node-title';
+                    t.textContent = String(n.name || '').trim() || '未命名概念';
+                    const sub = document.createElement('div');
+                    sub.className = 'logic-chain-node-sub';
+                    sub.textContent = n.codeId ? ('编码ID: ' + n.codeId) : '';
+
+                    card.appendChild(t);
+                    card.appendChild(sub);
+                    nodesLayer.appendChild(card);
+                    nodeIdToCardEl.set(String(n.id), card);
+
+                    allRenderNodes.push({
+                        id: n.id,
+                        name: n.name,
+                        level: n.level,
+                        x: n.x,
+                        y: n.y,
+                        w: LOGIC_CHAIN_LAYOUT.cardWidth,
+                        h: LOGIC_CHAIN_LAYOUT.cardHeight,
+                    });
+                }
+
+                stage.appendChild(svg);
+                stage.appendChild(nodesLayer);
+                stage.appendChild(labelsLayer);
+                chainEl.appendChild(stage);
+                wrap.appendChild(chainEl);
+
+                // 直线连线：基于 DOM 实测卡片边界，保证起点贴合右侧边框，终点贴合左侧边框
+                requestAnimationFrame(() => {
+                    // 卡片高度自适应后，按真实高度重新排版，避免文本增高导致重叠
+                    try {
+                        const layerToNodes = new Map();
+                        for (const n of laidOut.nodes) {
+                            const l = Number(n._layer || 0);
+                            if (!layerToNodes.has(l)) layerToNodes.set(l, []);
+                            layerToNodes.get(l).push(n);
+                        }
+                        let maxBottom = 0;
+                        for (const [l, arr] of layerToNodes.entries()) {
+                            arr.sort((a, b) => Number(a._row || 0) - Number(b._row || 0));
+                            let y = LOGIC_CHAIN_LAYOUT.chainPadding;
+                            for (const n of arr) {
+                                const el = nodeIdToCardEl.get(String(n.id));
+                                if (!el) continue;
+                                el.style.left = (LOGIC_CHAIN_LAYOUT.chainPadding + l * (LOGIC_CHAIN_LAYOUT.cardWidth + LOGIC_CHAIN_LAYOUT.colGap)).toFixed(1) + 'px';
+                                el.style.top = y.toFixed(1) + 'px';
+                                const h = Math.max(LOGIC_CHAIN_LAYOUT.cardHeight, el.getBoundingClientRect().height || 0);
+                                y += h + LOGIC_CHAIN_LAYOUT.rowGap;
+                                maxBottom = Math.max(maxBottom, y);
+                            }
+                        }
+                        const stageHeight = Math.max(
+                            Math.max(laidOut.height, LOGIC_CHAIN_LAYOUT.chainMinHeight),
+                            maxBottom + LOGIC_CHAIN_LAYOUT.chainPadding
+                        );
+                        stage.style.height = stageHeight + 'px';
+                        svg.setAttribute('height', String(stageHeight));
+                        svg.setAttribute('viewBox', `0 0 ${laidOut.width} ${stageHeight}`);
+                    } catch (e) {
+                        // 保持原布局，继续画线
+                    }
+                    drawStraightEdgesForStage({
+                        stageEl: stage,
+                        svgEl: svg,
+                        labelsLayerEl: labelsLayer,
+                        links: laidOut.links,
+                        nodeIdToCardEl,
+                        arrowMarkerId: `logicArrow_${idx}`,
+                        allRenderEdges,
+                        allRenderLabels,
+                    });
+                });
+            });
+
+            logicChainsRenderState = {
+                width: maxStageWidth,
+                height: totalStageHeight,
+                nodes: allRenderNodes,
+                edges: allRenderEdges,
+                labels: allRenderLabels,
+            };
+        }
+
+        function drawStraightEdgesForStage(opts) {
+            const stageEl = opts.stageEl;
+            const svgEl = opts.svgEl;
+            const labelsLayerEl = opts.labelsLayerEl;
+            const links = Array.isArray(opts.links) ? opts.links : [];
+            const nodeIdToCardEl = opts.nodeIdToCardEl;
+            const arrowMarkerId = opts.arrowMarkerId;
+            const allRenderEdges = opts.allRenderEdges;
+            const allRenderLabels = opts.allRenderLabels;
+
+            if (!stageEl || !svgEl || !labelsLayerEl || !nodeIdToCardEl) return;
+
+            // 清空旧边/标签（保留 defs）
+            while (svgEl.lastChild && svgEl.lastChild.tagName !== 'defs') {
+                svgEl.removeChild(svgEl.lastChild);
+            }
+            labelsLayerEl.innerHTML = '';
+
+            const stageRect = stageEl.getBoundingClientRect();
+            for (const e of links) {
+                const sEl = nodeIdToCardEl.get(String(e.source));
+                const tEl = nodeIdToCardEl.get(String(e.target));
+                if (!sEl || !tEl) continue;
+                const sr = sEl.getBoundingClientRect();
+                const tr = tEl.getBoundingClientRect();
+
+                const x1 = sr.right - stageRect.left; // 紧贴 source 右边框
+                const y1 = sr.top - stageRect.top + sr.height / 2;
+                const x2 = tr.left - stageRect.left; // 紧贴 target 左边框
+                const y2 = tr.top - stageRect.top + tr.height / 2;
+
+                const edgePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                edgePath.setAttribute('d', `M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)}`);
+                edgePath.setAttribute('fill', 'none');
+                edgePath.setAttribute('stroke', 'rgba(51, 65, 85, 0.95)');
+                edgePath.setAttribute('stroke-width', '2');
+                edgePath.setAttribute('marker-end', `url(#${arrowMarkerId})`);
+                edgePath.setAttribute('stroke-linecap', 'round');
+                edgePath.setAttribute('stroke-linejoin', 'round');
+                svgEl.appendChild(edgePath);
+
+                const midX = (x1 + x2) / 2;
+                const midY = (y1 + y2) / 2;
+                const relationText = simplifyRelationVerb(e.label, e.relationType);
+                const labelEl = document.createElement('div');
+                labelEl.className = 'logic-chain-label';
+                labelEl.textContent = relationText;
+                labelEl.style.left = midX.toFixed(1) + 'px';
+                labelEl.style.top = (midY - LOGIC_CHAIN_LAYOUT.labelLift).toFixed(1) + 'px';
+                labelsLayerEl.appendChild(labelEl);
+
+                if (Array.isArray(allRenderEdges)) {
+                    allRenderEdges.push({
+                        source: String(e.source),
+                        target: String(e.target),
+                        d: `M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)}`,
+                        p0: { x: x1, y: y1 },
+                        p1: { x: x1, y: y1 },
+                        p2: { x: x2, y: y2 },
+                        p3: { x: x2, y: y2 },
+                    });
+                }
+                if (Array.isArray(allRenderLabels)) {
+                    allRenderLabels.push({
+                        text: relationText,
+                        x: midX,
+                        y: midY - LOGIC_CHAIN_LAYOUT.labelLift,
+                    });
+                }
+            }
+        }
+
+        function simplifyRelationVerb(rawLabel, fallbackRelationType) {
+            const fallback = String(fallbackRelationType || '').trim() || '关联';
+            const raw = String(rawLabel || '').trim();
+            if (!raw) return fallback;
+
+            // 优先从形如：[A] --关系--> [B] / [A]->关系->[B] 中提取中间关系词
+            const m1 = raw.match(/\]\s*[-=]*\s*([^\[\]<>—\-]{1,18}?)\s*[-=]*\s*>?\s*\[/);
+            if (m1 && m1[1]) {
+                const v = String(m1[1]).trim();
+                if (v) return v;
+            }
+            const m2 = raw.match(/--\s*([^-\n]{1,18}?)\s*-->/);
+            if (m2 && m2[1]) {
+                const v = String(m2[1]).trim();
+                if (v) return v;
+            }
+
+            // 兜底：清理掉节点名与箭头符号，仅保留短词
+            let cleaned = raw
+                .replace(/\[[^\]]*?\]/g, ' ')
+                .replace(/<[^>]*?>/g, ' ')
+                .replace(/-{1,3}>|<{1,3}-|->|<-|—+|--+/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            if (!cleaned) return fallback;
+            if (cleaned.length > 18) cleaned = cleaned.slice(0, 18);
+            return cleaned || fallback;
+        }
+
+        function buildCleanLogicGraph(subGraphData) {
+            const rawNodes = Array.isArray(subGraphData?.nodes) ? subGraphData.nodes : [];
+            const rawLinks = Array.isArray(subGraphData?.links) ? subGraphData.links : [];
+            const usefulIds = new Set();
+            const links = rawLinks
+                .map(e => ({
+                    source: String(e?.source || '').trim(),
+                    target: String(e?.target || '').trim(),
+                    relationType: String(e?.relationType || '').trim(),
+                    label: String(e?.label || '').trim(),
+                    confidence: typeof e?.confidence === 'number' && Number.isFinite(e.confidence) ? e.confidence : null,
+                    isEssential: Boolean(e?.isEssential),
+                }))
+                .filter(e => e.source && e.target && e.source !== e.target);
+            links.forEach(e => {
+                usefulIds.add(e.source);
+                usefulIds.add(e.target);
+            });
+            const nodes = rawNodes
+                .filter(n => usefulIds.has(String(n?.id || '').trim()))
+                .map(n => ({
+                    id: String(n.id).trim(),
+                    name: String(n.name || '').trim(),
+                    codeId: String(n.codeId || '').trim(),
+                    level: Number(n.level) || null,
+                }));
+            return { nodes, links };
+        }
+
+        function buildConnectedComponents(nodes, links) {
+            const nodeById = new Map(nodes.map(n => [n.id, n]));
+            const neighbors = new Map();
+            for (const n of nodes) neighbors.set(n.id, new Set());
+            for (const e of links) {
+                if (!nodeById.has(e.source) || !nodeById.has(e.target)) continue;
+                neighbors.get(e.source).add(e.target);
+                neighbors.get(e.target).add(e.source);
+            }
+
+            const visited = new Set();
+            const components = [];
+            for (const n of nodes) {
+                if (visited.has(n.id)) continue;
+                const queue = [n.id];
+                visited.add(n.id);
+                const compIds = [];
+                while (queue.length) {
+                    const id = queue.shift();
+                    compIds.push(id);
+                    for (const nb of (neighbors.get(id) || [])) {
+                        if (visited.has(nb)) continue;
+                        visited.add(nb);
+                        queue.push(nb);
+                    }
+                }
+                const compNodes = compIds.map(id => nodeById.get(id)).filter(Boolean);
+                const idSet = new Set(compIds);
+                const compLinks = links.filter(e => idSet.has(e.source) && idSet.has(e.target));
+                components.push({ nodes: compNodes, links: compLinks });
+            }
+
+            components.sort((a, b) => b.links.length - a.links.length);
+            return components;
+        }
+
+        function layoutLogicComponent(nodes, links) {
+            const byId = new Map(nodes.map(n => [n.id, n]));
+            const indeg = new Map(nodes.map(n => [n.id, 0]));
+            const out = new Map(nodes.map(n => [n.id, []]));
+            for (const e of links) {
+                if (!byId.has(e.source) || !byId.has(e.target)) continue;
+                indeg.set(e.target, (indeg.get(e.target) || 0) + 1);
+                out.get(e.source).push(e.target);
+            }
+
+            const nCount = nodes.length;
+            const layer = new Map(nodes.map(n => [n.id, 0]));
+            for (let i = 0; i < Math.max(1, nCount); i += 1) {
+                let changed = false;
+                for (const e of links) {
+                    const a = layer.get(e.source) || 0;
+                    const b = layer.get(e.target) || 0;
+                    const cand = Math.min(nCount - 1, a + 1);
+                    if (cand > b) {
+                        layer.set(e.target, cand);
+                        changed = true;
+                    }
+                }
+                if (!changed) break;
+            }
+
+            const layers = new Map();
+            let maxLayer = 0;
+            for (const n of nodes) {
+                const l = layer.get(n.id) || 0;
+                maxLayer = Math.max(maxLayer, l);
+                if (!layers.has(l)) layers.set(l, []);
+                layers.get(l).push(n);
+            }
+            for (const arr of layers.values()) {
+                arr.sort((a, b) => String(a.name).localeCompare(String(b.name), 'zh-CN'));
+            }
+
+            const positioned = [];
+            const colCounts = [];
+            for (let l = 0; l <= maxLayer; l += 1) {
+                const arr = layers.get(l) || [];
+                colCounts.push(arr.length);
+                arr.forEach((n, idx) => {
+                    positioned.push({
+                        ...n,
+                        _layer: l,
+                        _row: idx,
+                        x: LOGIC_CHAIN_LAYOUT.chainPadding + l * (LOGIC_CHAIN_LAYOUT.cardWidth + LOGIC_CHAIN_LAYOUT.colGap),
+                        y: LOGIC_CHAIN_LAYOUT.chainPadding + idx * (LOGIC_CHAIN_LAYOUT.cardHeight + LOGIC_CHAIN_LAYOUT.rowGap),
+                    });
+                });
+            }
+
+            const width =
+                LOGIC_CHAIN_LAYOUT.chainPadding * 2 +
+                (maxLayer + 1) * LOGIC_CHAIN_LAYOUT.cardWidth +
+                maxLayer * LOGIC_CHAIN_LAYOUT.colGap +
+                (LOGIC_CHAIN_LAYOUT.chainRightPad || 0);
+
+            const maxRows = Math.max(1, ...colCounts);
+            const height =
+                LOGIC_CHAIN_LAYOUT.chainPadding * 2 +
+                maxRows * LOGIC_CHAIN_LAYOUT.cardHeight +
+                Math.max(0, maxRows - 1) * LOGIC_CHAIN_LAYOUT.rowGap;
+
+            const edgeLaneByKey = new Map();
+            const laidOutLinks = links.map(e => {
+                const key = `${e.source}__${e.target}`;
+                const lane = edgeLaneByKey.has(key) ? edgeLaneByKey.get(key) : edgeLaneByKey.size % 3;
+                if (!edgeLaneByKey.has(key)) edgeLaneByKey.set(key, lane);
+                return { ...e, _lane: lane };
+            });
+
+            return { nodes: positioned, links: laidOutLinks, width, height };
+        }
+
+
+        function getL3WithL1Evidence() {
+            if (!payload) return [];
+            const codesById = new Map(payload.codes.map(c => [c.id, c]));
+            const blocksById = new Map(payload.blocks.map(b => [b.id, b]));
+            const children = new Map();
+            for (const c of payload.codes) {
+                const key = c.parentId || '__root__';
+                if (!children.has(key)) children.set(key, []);
+                children.get(key).push(c);
+            }
+            const l3List = payload.codes.filter(c => Number(c.level) === 3);
+            return l3List.map(l3 => {
+                const l2s = children.get(l3.id) || [];
+                const l1s = l2s.flatMap(l2 => children.get(l2.id) || []).filter(c => Number(c.level) === 1);
+                const evidence = l1s.map(l1 => ({
+                    label: l1.name,
+                    quotes: (l1.refs || []).slice(0, 3).map(r => blocksById.get(r.blockId)?.text).filter(Boolean),
+                }));
+                return { l3: l3.name, evidence };
+            });
+        }
+
+        function buildTreeText() {
+            if (!payload) return '';
+            const byParent = new Map();
+            for (const c of payload.codes) {
+                const key = c.parentId || '__root__';
+                if (!byParent.has(key)) byParent.set(key, []);
+                byParent.get(key).push(c);
+            }
+            for (const arr of byParent.values()) {
+                arr.sort((a, b) => Number(b.level) - Number(a.level));
+            }
+            const lines = [];
+            function walk(parent, depth) {
+                const list = byParent.get(parent) || [];
+                for (const c of list) {
+                    lines.push('  '.repeat(depth) + `- [L${c.level}] ${c.name} (${c.basisId || 'N/A'})`);
+                    walk(c.id, depth + 1);
+                }
+            }
+            walk('__root__', 0);
+            return lines.join('\n');
+        }
+
+        function pulseBlockTwice(blockId) {
+            const el = readerBlocks.querySelector('[data-block-id="' + attrSel(blockId) + '"]');
+            if (!el) return;
+            el.classList.remove('is-pulse');
+            void el.offsetWidth;
+            el.classList.add('is-pulse');
+        }
+
         function buildBlockIndex() {
             blockToCodes = new Map();
             if (!payload) return;
@@ -533,6 +1776,21 @@
                     const arr = blockToCodes.get(r.blockId);
                     if (!arr.includes(c.id)) arr.push(c.id);
                 }
+            }
+        }
+
+        function buildTreeIndex() {
+            parentByCodeId = new Map();
+            childrenByCodeId = new Map();
+            if (!payload) return;
+            for (const c of payload.codes) {
+                const key = c.parentId || '__root__';
+                if (!childrenByCodeId.has(key)) childrenByCodeId.set(key, []);
+                childrenByCodeId.get(key).push(c);
+                parentByCodeId.set(c.id, c.parentId || null);
+            }
+            for (const arr of childrenByCodeId.values()) {
+                arr.sort((a, b) => (Number(b.level) - Number(a.level)) || a.id.localeCompare(b.id));
             }
         }
 
@@ -570,7 +1828,9 @@
                 el.dataset.blockId = b.id;
                 el.innerHTML =
                     '<span class="speaker">' + escapeHtml(b.speaker || '说话人') + '</span>' +
-                    '<div class="block-body">' + escapeHtml(b.text) + '</div>';
+                    '<div class="block-body">' + escapeHtml(b.text) + '</div>' +
+                    '<div class="block-tags"></div>' +
+                    '<div class="basis-panel hidden"></div>';
                 readerBlocks.appendChild(el);
             }
             applyHighlights();
@@ -585,44 +1845,54 @@
             }
             codeTreeEmpty.style.display = 'none';
 
-            const byParent = new Map();
-            for (const c of payload.codes) {
-                const k = c.parentId || '__root__';
-                if (!byParent.has(k)) byParent.set(k, []);
-                byParent.get(k).push(c);
-            }
-            for (const arr of byParent.values()) {
-                arr.sort((a, b) => (a.level - b.level) || a.id.localeCompare(b.id));
-            }
+            const roots = (childrenByCodeId.get('__root__') || []).filter(c => Number(c.level) === 3);
+            const rootList = roots.length ? roots : (childrenByCodeId.get('__root__') || []);
 
-            function indentFor(level) {
-                return Math.max(0, (level - 1)) * 14;
-            }
+            function makeNode(c) {
+                const wrap = document.createElement('div');
+                wrap.className = 'tree-node';
 
-            function walk(parentKey) {
-                const list = byParent.get(parentKey) || [];
-                for (const c of list) {
-                    const node = document.createElement('div');
-                    node.className = 'code-node';
-                    node.dataset.codeId = c.id;
-                    node.style.marginLeft = indentFor(c.level) + 'px';
+                const node = document.createElement('div');
+                node.className = 'code-node';
+                node.dataset.codeId = c.id;
 
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'code-hit';
-                    btn.innerHTML =
-                        '<div class="code-meta">' +
-                        '<span class="level-pill l' + c.level + '">L' + c.level + '</span>' +
-                        '</div>' +
-                        '<div class="code-name">' + escapeHtml(c.name) + '</div>' +
-                        '<div class="code-refs">' + c.refs.length + ' 条原文锚点</div>';
-                    btn.addEventListener('click', () => selectCode(c.id));
-                    node.appendChild(btn);
-                    codeTree.appendChild(node);
-                    walk(c.id);
+                const children = childrenByCodeId.get(c.id) || [];
+                const hasChildren = children.length > 0;
+                const expanded = expandedTreeIds.has(c.id);
+                const canExpand = hasChildren && (Number(c.level) === 3 || Number(c.level) === 2);
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'code-hit';
+                btn.innerHTML =
+                    '<div class="code-meta">' +
+                    '<span class="level-pill l' + c.level + '">L' + c.level + '</span>' +
+                    (canExpand
+                        ? '<span class="tree-toggle ' + (expanded ? 'is-expanded' : '') + '">▶</span>'
+                        : '<span class="tree-toggle"></span>') +
+                    '</div>' +
+                    '<div class="code-name">' + escapeHtml(c.name) + '</div>' +
+                    '<div class="code-refs">' + c.refs.length + ' 条原文锚点</div>';
+                btn.addEventListener('click', () => {
+                    if (canExpand) {
+                        if (expandedTreeIds.has(c.id)) expandedTreeIds.delete(c.id);
+                        else expandedTreeIds.add(c.id);
+                    }
+                    selectCode(c.id);
+                });
+                node.appendChild(btn);
+                wrap.appendChild(node);
+
+                if (hasChildren && expanded) {
+                    const childBox = document.createElement('div');
+                    childBox.className = 'tree-children';
+                    for (const child of children) childBox.appendChild(makeNode(child));
+                    wrap.appendChild(childBox);
                 }
+                return wrap;
             }
-            walk('__root__');
+
+            for (const root of rootList) codeTree.appendChild(makeNode(root));
             syncSidebarActive();
         }
 
@@ -637,12 +1907,17 @@
             readerBlocks.querySelectorAll('.text-block').forEach(el => {
                 const bid = el.dataset.blockId;
                 const body = el.querySelector('.block-body');
+                const tags = el.querySelector('.block-tags');
+                const basisPanel = el.querySelector('.basis-panel');
                 const block = payload.blocks.find(b => b.id === bid);
-                if (!body || !block) return;
+                if (!body || !block || !tags || !basisPanel) return;
 
                 if (!activeCodeId) {
                     body.innerHTML = escapeHtml(block.text);
                     el.classList.remove('is-lit');
+                    tags.innerHTML = '';
+                    basisPanel.classList.add('hidden');
+                    basisPanel.innerHTML = '';
                     return;
                 }
 
@@ -650,6 +1925,37 @@
                 const lit = refs.length > 0;
                 el.classList.toggle('is-lit', lit);
                 body.innerHTML = renderBlockBody(block.text, refs);
+
+                if (!lit) {
+                    tags.innerHTML = '';
+                    basisPanel.classList.add('hidden');
+                    basisPanel.innerHTML = '';
+                    return;
+                }
+
+                const code = payload.codes.find(c => c.id === activeCodeId);
+                if (!code) return;
+                const key = `${bid}::${code.id}`;
+                tags.innerHTML =
+                    '<button type="button" class="code-badge" data-block-id="' + escapeHtml(bid) + '" data-code-id="' + escapeHtml(code.id) + '">' +
+                    '编码：' + escapeHtml(code.name) + ' · 查看依据</button>';
+
+                if (expandedBadgeKey === key) {
+                    const basis = getBasisById(code.basisId);
+                    const content = basis
+                        ? (
+                            '<div class="basis-title">学术依据 · ' + escapeHtml(basis.id) + '</div>' +
+                            '<div><strong>规范主题：</strong>' + escapeHtml(basis.topic) + '</div>' +
+                            '<div><strong>定义内容：</strong>' + escapeHtml(basis.definition) + '</div>' +
+                            '<div><strong>方法论范式：</strong>' + escapeHtml(basis.paradigm) + '</div>'
+                        )
+                        : '<div class="basis-title">学术依据</div><div>未找到对应 basisId：' + escapeHtml(code.basisId || 'N/A') + '</div>';
+                    basisPanel.innerHTML = content;
+                    basisPanel.classList.remove('hidden');
+                } else {
+                    basisPanel.classList.add('hidden');
+                    basisPanel.innerHTML = '';
+                }
             });
         }
 
@@ -661,10 +1967,23 @@
         function selectCode(codeId) {
             if (!payload) return;
             activeCodeId = codeId;
+            let p = parentByCodeId.get(codeId);
+            while (p) {
+                expandedTreeIds.add(p);
+                p = parentByCodeId.get(p);
+            }
+            expandedBadgeKey = null;
+            renderCodeTree();
             applyHighlights();
-            syncSidebarActive();
             const code = payload.codes.find(c => c.id === codeId);
-            if (code && code.refs[0]) scrollToBlock(code.refs[0].blockId);
+            if (code && code.refs[0]) {
+                scrollToBlock(code.refs[0].blockId);
+                if (Number(code.level) === 1) {
+                    for (const ref of code.refs) {
+                        pulseBlockTwice(ref.blockId);
+                    }
+                }
+            }
         }
 
         function syncSidebarActive() {
@@ -676,9 +1995,7 @@
         function pulseCodesForBlock(blockId) {
             const ids = blockToCodes.get(blockId) || [];
             if (!ids.length) return;
-            activeCodeId = ids[0];
-            applyHighlights();
-            syncSidebarActive();
+            selectCode(ids[0]);
             scrollToBlock(blockId);
             ids.forEach(cid => {
                 const node = codeTree.querySelector('.code-node[data-code-id="' + attrSel(cid) + '"]');
@@ -692,6 +2009,16 @@
         }
 
         readerBlocks.addEventListener('click', (e) => {
+            const badge = e.target.closest('.code-badge');
+            if (badge && readerBlocks.contains(badge)) {
+                e.stopPropagation();
+                const bid = badge.getAttribute('data-block-id');
+                const cid = badge.getAttribute('data-code-id');
+                const key = `${bid}::${cid}`;
+                expandedBadgeKey = expandedBadgeKey === key ? null : key;
+                applyHighlights();
+                return;
+            }
             const block = e.target.closest('.text-block');
             if (!block || !readerBlocks.contains(block)) return;
             const bid = block.dataset.blockId;
@@ -723,12 +2050,14 @@
             setLoading(true);
             payload = null;
             activeCodeId = null;
-            btnCopyJson.disabled = true;
-            btnCopyReadable.disabled = true;
+            btnExportExcel.classList.remove('is-loading');
+            btnSmartConnectGlobal.classList.remove('is-loading');
+            btnGenerateMemo.classList.remove('is-loading');
             renderReader();
             renderCodeTree();
 
             try {
+                await ensureAcademicBaseReady();
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -753,25 +2082,30 @@
                     throw new Error(data.error || ('HTTP ' + response.status));
                 }
 
-                if (data.error && !data.choices) {
+                if (!data || typeof data !== 'object') {
+                    throw new Error('接口返回无效数据');
+                }
+                if (data.error) {
                     throw new Error(data.error);
                 }
+                if (!Array.isArray(data.blocks) || !Array.isArray(data.codes)) {
+                    throw new Error('接口未返回三级编码树结构');
+                }
 
-                const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-                if (!content) throw new Error('模型未返回内容');
-
-                const parsed = extractJsonFromModelText(content);
-                validatePayload(parsed);
-                payload = parsed;
+                payload = data;
+                validatePayload(payload);
                 buildBlockIndex();
+                buildTreeIndex();
+                expandedTreeIds = new Set();
                 renderReader();
                 renderCodeTree();
-                btnCopyJson.disabled = false;
-                btnCopyReadable.disabled = false;
             } catch (err) {
                 console.error(err);
                 setError('分析失败：' + err.message);
                 payload = null;
+                isLogicCanvasVisible = false;
+                if (logicCanvasSection) logicCanvasSection.classList.add('hidden');
+                if (logicGraphCanvas) logicGraphCanvas.innerHTML = '';
                 renderReader();
                 renderCodeTree();
             } finally {
@@ -779,37 +2113,487 @@
             }
         }
 
+        ensureAcademicBaseReady().catch(err => {
+            console.error(err);
+            setError('学术规范库加载失败：' + err.message);
+        });
+
+        if (tabCoding) tabCoding.addEventListener('click', () => switchTab('coding'));
+
+        function getCodeLevelByCodeId(codeId) {
+            if (!payload || !Array.isArray(payload.codes)) return null;
+            const code = payload.codes.find(c => c && c.id === codeId);
+            const level = code ? Number(code.level) : null;
+            return Number.isFinite(level) ? level : null;
+        }
+
+        function getCodeById(codeId) {
+            if (!payload || !Array.isArray(payload.codes)) return null;
+            return payload.codes.find(c => c && c.id === codeId) || null;
+        }
+
+        function getNodeLevel(n) {
+            return getCodeLevelByCodeId(n.codeId);
+        }
+
+        function getParentCodeId(codeId) {
+            const c = getCodeById(codeId);
+            return c ? (c.parentId || null) : null;
+        }
+
+
+        function dedupeTransitiveEdges(rawEdges) {
+            const edges = rawEdges.slice();
+            const out = [];
+            const bySource = new Map();
+            for (const e of edges) {
+                if (!bySource.has(e.source)) bySource.set(e.source, []);
+                bySource.get(e.source).push(e);
+            }
+            const hasEdge = (a, b) => edges.some(e => e.source === a && e.target === b);
+            const confVal = (e) => {
+                const v = e && typeof e.confidence === 'number' && Number.isFinite(e.confidence) ? e.confidence : 0.55;
+                return Math.max(0, Math.min(1, v));
+            };
+            for (const e of edges) {
+                if (e.isEssential) {
+                    out.push(e);
+                    continue;
+                }
+                let transitive = false;
+                const mids = (bySource.get(e.source) || []).map(x => x.target);
+                for (const m of mids) {
+                    if (m === e.target) continue;
+                    if (hasEdge(m, e.target)) {
+                        transitive = true;
+                        const ab = edges.find(x => x.source === e.source && x.target === m);
+                        const bc = edges.find(x => x.source === m && x.target === e.target);
+                        const chainConf = Math.min(confVal(ab), confVal(bc));
+                        const directConf = confVal(e);
+                        if (directConf >= chainConf + 0.18) {
+                            transitive = false;
+                        }
+                        break;
+                    }
+                }
+                if (!transitive) out.push(e);
+            }
+            return out;
+        }
+
+        btnSmartConnectGlobal.addEventListener('click', async () => {
+            if (!guardRequiresCoding()) return;
+            if (isGeneratingRelations) return;
+            const allCodes = Array.isArray(payload.codes) ? payload.codes.slice() : [];
+            if (allCodes.length < 2) {
+                showToast('当前编码数量不足，无法生成逻辑关联。');
+                return;
+            }
+            isGeneratingRelations = true;
+            setButtonLoading(btnSmartConnectGlobal, true);
+            try {
+                const nodesForModel = allCodes.map(c => ({
+                    // 用 @@ 拼接确保唯一，防止同名概念被模型混淆
+                    name: String(c.name || '').trim() + '@@' + String(c.id || '').trim(),
+                    codeId: String(c.id || '').trim(),
+                })).filter(n => n.name && n.codeId);
+                const res = await fetch('/api/model-relations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: interviewText.value || '',
+                        nodes: nodesForModel,
+                    }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+                const incomingEdges = [];
+                const parseNodeName = (raw) => {
+                    const text = String(raw || '').trim();
+                    const idx = text.lastIndexOf('@@');
+                    if (idx <= 0) return { display: text, codeId: '' };
+                    return { display: text.slice(0, idx).trim(), codeId: text.slice(idx + 2).trim() };
+                };
+                for (const edge of (data.edges || [])) {
+                    const s0 = parseNodeName(edge.source);
+                    const t0 = parseNodeName(edge.target);
+                    if (!s0.codeId || !t0.codeId) continue;
+                    const relationType = String(edge.relationType || '').trim() || '关联';
+                    const label =
+                        String(edge.label || '').trim() ||
+                        ('[' + s0.display + '] --' + relationType + '--> [' + t0.display + ']');
+                    const confidenceRaw = Number(edge.confidence);
+                    const confidence =
+                        Number.isFinite(confidenceRaw)
+                            ? Math.max(0, Math.min(1, confidenceRaw))
+                            : null;
+                    incomingEdges.push({
+                        id: 'me_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                        source: s0.codeId,
+                        target: t0.codeId,
+                        relationType,
+                        label,
+                        confidence,
+                        isEssential: Boolean(edge.isEssential),
+                    });
+                }
+                const dedupedIncoming = dedupeTransitiveEdges(incomingEdges);
+                const byCodeId = new Map(allCodes.map(c => [String(c.id), c]));
+                const usefulIds = new Set();
+                for (const e of dedupedIncoming) {
+                    usefulIds.add(e.source);
+                    usefulIds.add(e.target);
+                }
+                const nodes = Array.from(usefulIds)
+                    .map(id => byCodeId.get(id))
+                    .filter(Boolean)
+                    .map(c => ({
+                        id: String(c.id),
+                        name: String(c.name || '').trim(),
+                        codeId: String(c.id),
+                        level: Number(c.level) || null,
+                    }));
+                const links = dedupedIncoming.map(e => ({
+                    source: e.source,
+                    target: e.target,
+                    relationType: e.relationType,
+                    label: e.label,
+                    confidence: e.confidence,
+                    isEssential: e.isEssential,
+                }));
+                const subGraphData = { nodes, links };
+                if (!subGraphData.links.length || !subGraphData.nodes.length) {
+                    showToast('当前未识别到可用的逻辑关联关系。');
+                    return;
+                }
+                openLogicModalWithGraph(subGraphData);
+            } catch (err) {
+                alert('自动建立逻辑关联失败：' + err.message);
+            } finally {
+                isGeneratingRelations = false;
+                setButtonLoading(btnSmartConnectGlobal, false);
+            }
+        });
+
+        function exportIndependentLogicChainsToPng(containerEl, pixelRatio) {
+            const ratio = Number(pixelRatio) > 0 ? Number(pixelRatio) : 2;
+            const rect = containerEl.getBoundingClientRect();
+            const width = Math.max(10, Math.floor(rect.width));
+            const height = Math.max(10, Math.floor(rect.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.floor(width * ratio);
+            canvas.height = Math.floor(height * ratio);
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return null;
+            ctx.scale(ratio, ratio);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+
+            const containerRect = rect;
+
+            // Edges: read from DOM (stage-local SVG path) to keep multi-chain offsets correct
+            ctx.strokeStyle = 'rgba(51, 65, 85, 0.95)';
+            ctx.lineWidth = 2;
+            const stages = Array.from(containerEl.querySelectorAll('.logic-chain-stage'));
+            for (const stage of stages) {
+                const stageRect = stage.getBoundingClientRect();
+                const stageX = stageRect.left - containerRect.left;
+                const stageY = stageRect.top - containerRect.top;
+                const svg = stage.querySelector('svg.logic-chain-edges');
+                if (!svg) continue;
+                const paths = Array.from(svg.querySelectorAll('path'));
+                ctx.save();
+                ctx.translate(stageX, stageY);
+                for (const p of paths) {
+                    const d = p.getAttribute('d');
+                    if (!d) continue;
+                    try {
+                        const path2d = new Path2D(d);
+                        ctx.stroke(path2d);
+                    } catch {
+                        // ignore unsupported path
+                    }
+                }
+                ctx.restore();
+            }
+
+            // Nodes
+            const nodeEls = Array.from(containerEl.querySelectorAll('.logic-chain-node'));
+            for (const el of nodeEls) {
+                const r = el.getBoundingClientRect();
+                const x = r.left - containerRect.left;
+                const y = r.top - containerRect.top;
+                if (x + r.width < -40 || y + r.height < -40 || x > width + 40 || y > height + 40) continue;
+                const level = Number(el.dataset.level) || 0;
+                const fill =
+                    level === 3 ? 'rgba(191, 219, 254, 0.98)' :
+                    (level === 2 ? 'rgba(219, 234, 254, 0.98)' : 'rgba(239, 246, 255, 0.98)');
+                const stroke =
+                    level === 3 ? 'rgba(29, 78, 216, 0.9)' : 'rgba(29, 78, 216, 0.45)';
+                const strokeW = level === 3 ? 2 : 1;
+                drawRoundedRect(ctx, x, y, r.width, r.height, 12, fill, stroke, strokeW);
+                const title = el.querySelector('.logic-chain-node-title')?.textContent || '';
+                ctx.fillStyle = '#0f172a';
+                ctx.font = '700 14px Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif';
+                wrapCanvasText(ctx, String(title || ''), x + 12, y + 22, r.width - 24, 18, 2);
+            }
+
+            // Labels
+            const labelEls = Array.from(containerEl.querySelectorAll('.logic-chain-label'));
+            for (const el of labelEls) {
+                const r = el.getBoundingClientRect();
+                const x = r.left - containerRect.left + r.width / 2;
+                const y = r.top - containerRect.top + r.height / 2;
+                if (x < -120 || y < -60 || x > width + 120 || y > height + 60) continue;
+                const text = String(el.textContent || '').trim();
+                if (!text) continue;
+                ctx.font = '12px Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif';
+                const metrics = ctx.measureText(text);
+                const padX = 8;
+                const w = Math.ceil(metrics.width + padX * 2);
+                const h = 20;
+                drawRoundedRect(ctx, x - w / 2, y - h / 2, w, h, 8, '#ffffff', 'rgba(203, 213, 225, 0.9)', 1);
+                ctx.fillStyle = '#1f2937';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(text, x - w / 2 + padX, y);
+            }
+
+            return canvas.toDataURL('image/png');
+        }
+
+        function drawRoundedRect(ctx, x, y, w, h, r, fill, stroke, strokeW) {
+            const rr = Math.min(r, w / 2, h / 2);
+            ctx.beginPath();
+            ctx.moveTo(x + rr, y);
+            ctx.arcTo(x + w, y, x + w, y + h, rr);
+            ctx.arcTo(x + w, y + h, x, y + h, rr);
+            ctx.arcTo(x, y + h, x, y, rr);
+            ctx.arcTo(x, y, x + w, y, rr);
+            ctx.closePath();
+            if (fill) {
+                ctx.fillStyle = fill;
+                ctx.fill();
+            }
+            if (stroke) {
+                ctx.strokeStyle = stroke;
+                ctx.lineWidth = strokeW || 1;
+                ctx.stroke();
+            }
+        }
+
+        function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+            const words = String(text || '').replace(/\s+/g, ' ').trim().split(' ');
+            const lines = [];
+            let line = '';
+            for (const w of words) {
+                const test = line ? (line + ' ' + w) : w;
+                if (ctx.measureText(test).width <= maxWidth) {
+                    line = test;
+                } else {
+                    if (line) lines.push(line);
+                    line = w;
+                }
+            }
+            if (line) lines.push(line);
+            const sliced = lines.slice(0, Math.max(1, maxLines || 2));
+            if (lines.length > sliced.length) {
+                const last = sliced[sliced.length - 1];
+                sliced[sliced.length - 1] = last.replace(/.{0,3}$/, '…');
+            }
+            for (let i = 0; i < sliced.length; i += 1) {
+                ctx.fillText(sliced[i], x, y + i * lineHeight);
+            }
+        }
+
+        btnGenerateMemo.addEventListener('click', async () => {
+            if (!guardRequiresCoding()) return;
+            if (isGeneratingMemo) return;
+            isGeneratingMemo = true;
+            setButtonLoading(btnGenerateMemo, true);
+            try {
+                const res = await fetch('/api/generate-memo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ payload }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+                memoDraft = String(data.memo || '').trim();
+                if (!memoDraft) throw new Error('未生成有效备忘录');
+                memoText.textContent = memoDraft;
+                memoPanel.classList.remove('hidden');
+                memoPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (err) {
+                alert('生成备忘录失败：' + err.message);
+            } finally {
+                isGeneratingMemo = false;
+                setButtonLoading(btnGenerateMemo, false);
+            }
+        });
+
+        btnExportWord.addEventListener('click', () => {
+            if (!memoDraft) return;
+            const treeText = buildTreeText();
+            const html =
+                '<html><head><meta charset="utf-8"></head><body>' +
+                '<h1>研究备忘录</h1>' +
+                '<p style="white-space:pre-wrap;line-height:1.8">' + escapeHtml(memoDraft) + '</p>' +
+                '<h2>当前编码树</h2>' +
+                '<pre>' + escapeHtml(treeText) + '</pre>' +
+                '</body></html>';
+            const blob = new Blob([html], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'research-memo.doc';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        btnExportPdf.addEventListener('click', () => {
+            if (!memoDraft) return;
+            const treeText = buildTreeText();
+            const win = window.open('', '_blank');
+            if (!win) return;
+            win.document.write(
+                '<html><head><meta charset="utf-8"><title>研究备忘录</title></head><body>' +
+                '<h1>研究备忘录</h1>' +
+                '<p style="white-space:pre-wrap;line-height:1.8">' + escapeHtml(memoDraft) + '</p>' +
+                '<h2>当前编码树</h2><pre>' + escapeHtml(treeText) + '</pre>' +
+                '</body></html>'
+            );
+            win.document.close();
+            win.focus();
+            win.print();
+        });
+
         analyzeButton.addEventListener('click', runAnalyze);
 
-        btnCopyJson.addEventListener('click', async () => {
-            if (!payload) return;
-            try {
-                await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
-                alert('已复制溯源 JSON');
-            } catch (e) {
-                alert('复制失败，请手动选择文本');
-            }
-        });
+        btnExportExcel.addEventListener('click', handleExportExcel);
 
-        btnCopyReadable.addEventListener('click', async () => {
-            if (!payload) return;
-            const lines = [];
-            for (const c of payload.codes) {
-                lines.push('【L' + c.level + '】' + c.name + '（' + c.id + '）');
-                for (const r of c.refs) {
-                    const b = payload.blocks.find(x => x.id === r.blockId);
-                    const excerpt = b ? b.text.replace(/\s+/g, ' ').slice(0, 120) : '';
-                    lines.push('  ·锚点 ' + r.blockId + (r.start != null ? ' [' + r.start + ',' + r.end + ']' : '') + ' — ' + excerpt);
-                }
-                lines.push('');
+        function formatDateYMD(d) {
+            const dt = d instanceof Date ? d : new Date();
+            const y = dt.getFullYear();
+            const m = String(dt.getMonth() + 1).padStart(2, '0');
+            const day = String(dt.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        async function handleExportExcel() {
+            if (!guardRequiresCoding()) return;
+            if (isExportingExcel) return;
+
+            const ExcelJSRef = window.ExcelJS;
+            const saveAsRef = window.saveAs;
+            if (!ExcelJSRef || !ExcelJSRef.Workbook || typeof saveAsRef !== 'function') {
+                alert('Excel 导出库未加载。请在项目根目录执行：npm install exceljs file-saver，并确保页面已正确加载相关脚本。');
+                return;
             }
+
+            isExportingExcel = true;
+            setButtonLoading(btnExportExcel, true);
             try {
-                await navigator.clipboard.writeText(lines.join('\n'));
-                alert('已复制可读摘要');
-            } catch (e) {
-                alert('复制失败');
+                const codes = payload.codes.slice();
+                const childrenByParent = new Map();
+                for (const c of codes) {
+                    const pid = c.parentId ? String(c.parentId) : '__root__';
+                    if (!childrenByParent.has(pid)) childrenByParent.set(pid, []);
+                    childrenByParent.get(pid).push(c);
+                }
+
+                const l3List = codes
+                    .filter(c => Number(c.level) === 3)
+                    .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'zh-CN'));
+
+                const workbook = new ExcelJSRef.Workbook();
+                const worksheet = workbook.addWorksheet('编码表');
+
+                // 表头
+                worksheet.addRow(['一级编码', '二级编码', '三级编码']);
+
+                /** @type {{ startRow: number, endRow: number }[]} */
+                const l3RowRanges = [];
+
+                for (const l3 of l3List) {
+                    const startRow = worksheet.rowCount + 1;
+                    const l2List = (childrenByParent.get(String(l3.id)) || [])
+                        .filter(x => Number(x.level) === 2)
+                        .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'zh-CN'));
+
+                    if (!l2List.length) {
+                        worksheet.addRow(['', '', String(l3.name || '')]);
+                    } else {
+                        for (const l2 of l2List) {
+                            const l1List = (childrenByParent.get(String(l2.id)) || [])
+                                .filter(x => Number(x.level) === 1)
+                                .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'zh-CN'));
+
+                            const l1Text = l1List
+                                .map((l1, idx) => `${idx + 1}. ${String(l1.name || '').trim()}`)
+                                .filter(Boolean)
+                                .join('\n');
+
+                            worksheet.addRow([l1Text, String(l2.name || ''), String(l3.name || '')]);
+                        }
+                    }
+
+                    const endRow = worksheet.rowCount;
+                    l3RowRanges.push({ startRow, endRow });
+                }
+
+                // 合并三级编码（C列）
+                for (const { startRow, endRow } of l3RowRanges) {
+                    if (endRow > startRow) {
+                        worksheet.mergeCells(startRow, 3, endRow, 3);
+                    }
+                }
+
+                // 列宽
+                worksheet.getColumn(1).width = 35;
+                worksheet.getColumn(2).width = 45;
+                worksheet.getColumn(3).width = 30;
+
+                // 表头样式
+                const headerRow = worksheet.getRow(1);
+                headerRow.eachCell((cell) => {
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFF00' } };
+                    cell.font = { bold: true };
+                    cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' },
+                    };
+                });
+
+                // 全表样式（有数据范围：1..rowCount, 1..3）
+                for (let r = 1; r <= worksheet.rowCount; r += 1) {
+                    for (let c = 1; c <= 3; c += 1) {
+                        const cell = worksheet.getCell(r, c);
+                        if (!cell.value && r !== 1) continue;
+                        if (!cell.alignment) cell.alignment = {};
+                        cell.alignment = { ...cell.alignment, vertical: 'middle', wrapText: true };
+                        cell.border = {
+                            top: { style: 'thin' },
+                            left: { style: 'thin' },
+                            bottom: { style: 'thin' },
+                            right: { style: 'thin' },
+                        };
+                    }
+                }
+
+                const buffer = await workbook.xlsx.writeBuffer();
+                const blob = new Blob([buffer], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                });
+                saveAsRef(blob, '质性研究三级编码表.xlsx');
+            } finally {
+                isExportingExcel = false;
+                setButtonLoading(btnExportExcel, false);
             }
-        });
+        }
     </script>
 </body>
 </html>
